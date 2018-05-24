@@ -1,0 +1,21 @@
+{
+  siteName: IPTorrents
+  baseUrl: https://www.iptorrents.com
+  network: iptorrents
+  host: irc.iptorrents.com
+  port: 6667
+  channels: [
+    '#ipt.announce'
+    # '#ipt.announce2'
+  ]
+  announcers: [
+    'IPT'
+    'FunTimes'
+  ]
+  placeholders: {
+    name: /^\[.*\]\s(.*?)(?:\sFREELEECH)?\s-/
+    size: /-\s([\d.]*\s[MG]B)$/
+    id: /id=(\d*)\s/
+  }
+  uriTemplate: '{baseUrl}/download.php/{id}/{file}{passKey}'
+}

@@ -1,0 +1,12 @@
+bin
+dist
+node_modules
+config.hjson
+test/fixtures/nockBack/**/*
+docs
+unrar.exe
+movies
+tv
+ircMon.log*
+.store
+sites/test.hjson

@@ -1,0 +1,124 @@
+{
+  "name": "ircmon",
+  "author": "fauxilla <fauxilla@protonmail.com>",
+  "description": "monitor irc announce channels and download matched releases",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/fauxilla/ircmon.git"
+  },
+  "homepage": "http://fauxilla.github.io/ircmon",
+  "version": "1.0.0",
+  "keywords": [
+    "torrent",
+    "irc"
+  ],
+  "bugs": {
+    "url": "https://github.com/fauxilla/ircmon/issues"
+  },
+  "license": "MIT",
+  "main": "dist/index",
+  "bin": {
+    "undiscombobulate": "dist/index.js"
+  },
+  "scripts": {
+    "start": "cross-env DEBUG=undisco* node dist",
+    "build": "npm run babel && npm run client:prodn && npm run docs && cp docs/README.md.html docs/index.html && npm run gh-pages",
+    "readme": "node-readme",
+    "babel": "babel lib -d dist --ignore client",
+    "babel:watch": "babel lib --watch -d dist --ignore client",
+    "test": "cross-env DEBUG=undisco* NODE_ENV=test mocha --compilers js:babel-register test",
+    "test:watch": "cross-env DEBUG=undisco* NODE_ENV=test mocha --compilers js:babel-register --watch test",
+    "docs": "npm run readme && rm -fr ./docs/* && docker -o ./docs -I -x dist,.README.md,test/fixtures,node_modules,docs",
+    "gh-pages": "gh-pages -d docs",
+    "pkg-linux": "pkg . --targets node8-linux --output bin/undisco-linux-x64",
+    "pkg-win": "pkg . --targets node8-win --output bin/undisco-win-x64.exe",
+    "pkg": "npm run pkg-linux && npm run pkg-win"
+  },
+  "dependencies": {
+    "babel-eslint": "^8.2.3",
+    "bunyan": "^1.8.12",
+    "chalk": "^2.4.1",
+    "chokidar": "^2.0.3",
+    "cli-progress-bar": "^1.0.1",
+    "command-line-args": "^5.0.2",
+    "command-line-usage": "^5.0.5",
+    "cuid": "^2.1.1",
+    "debug": "^2.6.8",
+    "deluge": "github:ginman86/deluge",
+    "flashheart": "^2.9.0",
+    "font-ascii": "^1.1.16",
+    "fs-extra": "^5.0.0",
+    "hjson": "^3.1.1",
+    "human-format": "^0.10.0",
+    "irc": "^0.5.2",
+    "lodash": "^4.17.10",
+    "multimatch": "^2.1.0",
+    "mz": "^2.7.0",
+    "nedb": "^1.8.0",
+    "pretty-bytes": "^4.0.2",
+    "pretty-ms": "^3.1.0",
+    "prettyjson": "^1.2.1",
+    "progress-stream": "^2.0.0",
+    "request": "^2.85.0",
+    "sequelize": "^4.37.6",
+    "sqlite3": "^4.0.0",
+    "string-template": "^1.0.0",
+    "string-to-regexp": "^0.1.0",
+    "timestring": "^5.0.1",
+    "unrar": "^0.1.7",
+    "winston": "^2.4.2",
+    "xml2js": "^0.4.19"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.16.0",
+    "babel-core": "^6.17.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.26.0",
+    "cross-env": "^3.1.3",
+    "docker": "^1.0.0",
+    "eslint": "^3.7.1",
+    "eslint-config-standard": "^6.2.0",
+    "eslint-plugin-babel": "^3.3.0",
+    "eslint-plugin-promise": "^3.0.0",
+    "eslint-plugin-standard": "^2.0.1",
+    "gh-pages": "^0.12.0",
+    "mocha": "^5.1.1",
+    "nock": "^9.2.5",
+    "node-readme": "^0.1.9",
+    "pkg": "^4.3.1",
+    "sinon": "^4.5.0"
+  },
+  "eslintConfig": {
+    "rules": {},
+    "parser": "babel-eslint",
+    "extends": "standard",
+    "installedESLint": true,
+    "plugins": [
+      "standard",
+      "babel"
+    ],
+    "env": {
+      "node": true,
+      "mocha": true
+    }
+  },
+  "pkg": {
+    "scripts": "dist/modules/*.js",
+    "assets": "config.sample.hjson"
+  },
+  "nyc": {
+    "include": [
+      "lib/**/*.js"
+    ],
+    "require": [
+      "babel-register"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  },
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  }
+}
