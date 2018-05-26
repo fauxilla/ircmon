@@ -1,0 +1,34 @@
+{
+  listener: {
+    descriptor: freeleech
+    test: true
+    siteName: iptorrents
+    nick: fauxnom_autodl
+    password: ''
+    cookies: [
+      uid=1774557
+      pass=89dfee1dc460936e6c8719993390c0f5
+    ]
+    tests: [
+      Dancing\sWith
+    ],
+    series: 2
+    episode: 2
+    minSize: 2 GB
+    maxSize: 50 GB
+    mode: series
+  },
+  opt: {
+    downloadTo: deluge
+    deluge: {
+      enabled: true
+      url: http://172.18.0.3:8112
+      password: deluge
+    }
+    blackHole: {
+      enabled: true
+      path: /srv/blackHole
+    }
+  },
+  message: "[TV/x265] Dancing With The Stars NZ 720p S02E04 HEVC x265-MeGusta - http://www.iptorrents.com/details.php?id=2842766 - 1.5 GB"
+}

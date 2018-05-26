@@ -1,22 +1,28 @@
-import {
-  back as nockBack
-} from 'nock'
+// import {
+//   back as nockBack
+// } from 'nock'
 import assert from 'assert'
 import debug from 'debug'
-import ircMon from '../lib'
+import Listener from '../lib/Listener'
 import {
-  stub,
-  rewire
+  stub
 } from 'sinon'
 // import sinon from 'sinon'
 // import http from 'http'
-import hjson from 'hjson'
+import {
+  parse
+} from 'hjson'
+import {
+  join
+} from 'path'
+import {
+  Client
+} from 'irc'
 
 import {
-  readFileSync,
-  statSync,
+  readFile,
   unlink
-} from 'fs'
+} from 'mz/fs'
 import {
   loadDatabase
 } from '../lib/db'
@@ -34,36 +40,28 @@ const dbg = debug('undisco:test')
  * thereafter, the requests won't actually be sent.
  * to avoid committing your apiKey, the stored requests are .gitignored.
  */
-nockBack.setMode('record')
-nockBack.fixtures = 'test/fixtures/nockBack'
+// nockBack.setMode('record')
+// nockBack.fixtures = 'test/fixtures/nockBack'
 
-const opt = {
-  downloadTo: 'deluge',
-  deluge: {
-    enabled: true,
-    url: 'http://someurl',
-    password: 'deluge'
-  },
-  blackHole: {
-    enabled: true,
-    path: 'test/blackHole'
-  }
+async function getFixture (descriptor) {
+  const path = join('test', 'fixtures', `${descriptor}.hjson`)
+  return parse(await readFile(path, 'utf8'))
 }
-
 describe('undisco', () => {
-  before(async (done) => {
+  before(async () => {
     try {
       await unlink('test/.store')
     } catch (e) {
+      console.log('store doesnt exist')
       // file doesn't exist
     }
     loadDatabase('test/.store')
     emptyDirSync('test/blackHole')
-    const StubbedConnection = stub()
-    StubbedConnection.prototype.join = stub()
-    StubbedConnection.prototype.addListener = stub()
-    rewire('lib/Connection').set('Connection', StubbedConnection)
-    done()
+
+    // newter irc Client
+    stub(Client.prototype, 'connect').callsArg(0)
+    stub(Client.prototype, 'join').callsArg(1)
+    stub(Listener.prototype, 'downloadTorrent').resolves()
   })
   beforeEach(function () {
     // create spy
@@ -78,61 +76,176 @@ describe('undisco', () => {
     // this.requestSpy.restore()
     // cloudinary.api.resources.restore()
   })
-  it('check: announced by announcer', async (done) => {
-    const listener = {
-      siteName: 'IPTorrents'
-    }
-    const ircMon = new IrcMon(listener, opt)
-    ircMon.handler('notAnnouncer', null, '')
+  it('check: announced by announcer', async () => {
+    const fixtures = await getFixture('01announcer')
+    let { listener } = fixtures
+    const {
+      opt,
+      message
+    } = fixtures
+    listener = new Listener(listener, opt)
+    await listener.init()
+    listener.connection.emit(
+      'message',
+      'notAnnouncer',
+      null,
+      message
+    )
+    assert.equal(listener.checkError.code, 'announcer')
+    listener.connection.removeAllListeners('message')
   })
-  it('resolve movie from path', (done) => {
-    nockBack('1', (writeRequests) => {
-      const opt = Object.assign({}, config, {path: 'test/fixtures/1'})
-      undisco(opt)
-      .then((dump) => {
-        assert(dump[0].tmdb.title, 'Hostiles')
-        writeRequests()
-        done()
-      })
-    })
-  }).timeout(5000)
-
-  it('resolve tv from path', (done) => {
-    nockBack('2', (writeRequests) => {
-      const opt = Object.assign({}, config, {path: 'test/fixtures/2'})
-      undisco(opt)
-      .then((dump) => {
-        assert(dump[0].placeholders.title, 'Fringe')
-        assert.doesNotThrow(() => statSync(dump[0].files[0].destPath))
-        writeRequests()
-        done()
-      })
-    })
-  }).timeout(5000)
-  it('resolve from nfo', (done) => {
-    nockBack('3', (writeRequests) => {
-      const opt = Object.assign({}, config, {path: 'test/fixtures/3'})
-      undisco(opt)
-      .then((dump) => {
-        // console.log(dump[0].files)
-        assert(dump[0].placeholders.title, 'Old Boy')
-        assert.doesNotThrow(() => statSync(dump[0].files[0].destPath))
-        writeRequests()
-        done()
-      })
-    })
-  }).timeout(5000)
-  it('extract rar', (done) => {
-    nockBack('4', (writeRequests) => {
-      const opt = Object.assign({}, config, {path: 'test/fixtures/4'})
-      undisco(opt)
-      .then((dump) => {
-        // console.log(dump[0].files)
-        assert(dump[0].placeholders.title, 'Fringe')
-        assert.doesNotThrow(() => statSync(dump[0].files[0].destPath))
-        writeRequests()
-        done()
-      })
-    })
-  }).timeout(5000)
+  it('check: no match', async () => {
+    const fixtures = await getFixture('02match')
+    let { listener } = fixtures
+    const {
+      opt,
+      message
+    } = fixtures
+    listener = new Listener(listener, opt)
+    await listener.init()
+    listener.connection.emit(
+      'message',
+      'IPT',
+      null,
+      message
+    )
+    assert.equal(listener.checkError.code, 'match')
+    listener.connection.removeAllListeners('message')
+  })
+  it('check: series mode, msg contains SxxExx', async () => {
+    const fixtures = await getFixture('03noSeriesEp')
+    let { listener } = fixtures
+    const {
+      opt,
+      message
+    } = fixtures
+    listener = new Listener(listener, opt)
+    await listener.init()
+    listener.connection.emit(
+      'message',
+      'IPT',
+      null,
+      message
+    )
+    assert.equal(listener.checkError.code, 'noSeriesEp')
+    listener.connection.removeAllListeners('message')
+  })
+  it('check: series mode, old series', async () => {
+    const fixtures = await getFixture('04series')
+    let { listener } = fixtures
+    const {
+      opt,
+      message
+    } = fixtures
+    listener = new Listener(listener, opt)
+    await listener.init()
+    listener.connection.emit(
+      'message',
+      'IPT',
+      null,
+      message
+    )
+    assert.equal(listener.checkError.code, 'series')
+    listener.connection.removeAllListeners('message')
+  })
+  it('check: series mode, old ep', async () => {
+    const fixtures = await getFixture('05episode')
+    let { listener } = fixtures
+    const {
+      opt,
+      message
+    } = fixtures
+    listener = new Listener(listener, opt)
+    await listener.init()
+    listener.connection.emit(
+      'message',
+      'IPT',
+      null,
+      message
+    )
+    assert.equal(listener.checkError.code, 'episode')
+    listener.connection.removeAllListeners('message')
+  })
+  it('check: series mode, increment ep', async () => {
+    const fixtures = await getFixture('06incrementEpisode')
+    let { listener } = fixtures
+    const {
+      opt,
+      message
+    } = fixtures
+    listener = new Listener(listener, opt)
+    await listener.init()
+    listener.connection.emit(
+      'message',
+      'IPT',
+      null,
+      message
+    )
+    assert.equal(listener.checkError, undefined)
+    // not possible to await event handler
+    await new Promise((resolve) => setTimeout(resolve, 250))
+    // same message twice
+    listener.connection.emit(
+      'message',
+      'IPT',
+      null,
+      message
+    )
+    assert.equal(listener.checkError.code, 'episode')
+    listener.connection.removeAllListeners('message')
+  })
+  it('check: minSize', async () => {
+    const fixtures = await getFixture('07minSize')
+    let { listener } = fixtures
+    const {
+      opt,
+      message
+    } = fixtures
+    listener = new Listener(listener, opt)
+    await listener.init()
+    listener.connection.emit(
+      'message',
+      'IPT',
+      null,
+      message
+    )
+    assert.equal(listener.checkError.code, 'minSize')
+    listener.connection.removeAllListeners('message')
+  })
+  it('check: maxSize', async () => {
+    const fixtures = await getFixture('08maxSize')
+    let { listener } = fixtures
+    const {
+      opt,
+      message
+    } = fixtures
+    listener = new Listener(listener, opt)
+    await listener.init()
+    listener.connection.emit(
+      'message',
+      'IPT',
+      null,
+      message
+    )
+    assert.equal(listener.checkError.code, 'maxSize')
+    listener.connection.removeAllListeners('message')
+  })
+  it('check: frequency', async () => {
+    const fixtures = await getFixture('09frequency')
+    let { listener } = fixtures
+    const {
+      opt,
+      message
+    } = fixtures
+    listener = new Listener(listener, opt)
+    await listener.init()
+    listener.connection.emit(
+      'message',
+      'IPT',
+      null,
+      message
+    )
+    assert.equal(listener.checkError.code, 'frequency')
+    listener.connection.removeAllListeners('message')
+  })
 })
