@@ -28,7 +28,7 @@
     "babel:watch": "babel lib --watch -d dist --ignore client",
     "test": "cross-env DEBUG=undisco* NODE_ENV=test mocha --compilers js:babel-register test",
     "test:watch": "cross-env DEBUG=undisco* NODE_ENV=test mocha --compilers js:babel-register --watch test",
-    "docs": "docs:readme && readme && docs:html && ghpages",
+    "docs": "npm run docs:readme && npm run readme && npm run docs:html && npm run ghpages",
     "docs:readme": "documentation readme --readme-file .README.md --format md --section API --document-exported true --markdown-toc true --github true lib/**",
     "docs:html": "documentation build --format html --document-exported true --github true --output docs src/**",
     "gh-pages": "gh-pages -d docs",
