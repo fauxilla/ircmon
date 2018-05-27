@@ -1,30 +1,23 @@
-## undiscombobulate
+## ircmon
 
-![github-issues](https://img.shields.io/github/issues/fauxilla/undiscombobulate.svg) ![stars](https://img.shields.io/github/stars/fauxilla/undiscombobulate.svg) ![forks](https://img.shields.io/github/forks/fauxilla/undiscombobulate.svg)
+![github-issues](https://img.shields.io/github/issues/fauxilla/ircmon.svg) ![stars](https://img.shields.io/github/stars/fauxilla/ircmon.svg) ![forks](https://img.shields.io/github/forks/fauxilla/ircmon.svg)
 
-extensible post processing for movies & tv
+monitor irc announce channels and download matched releases
 
-Undisco scans your completed downloads, identifies the movie or tv episode, and copies the release into your media archive with appropriate file names.
+like autodl_irssi, but:
 
-Should work on both Linux and Windows.
+ * written with node
+ * extensible
+ * no irssi dependency
+ * add torrent to deluge
 
-Take a look at the awesome [annotated code](https://fauxilla.github.io/undiscombobulate/lib/index.js.html)
+Take a look at the awesome [annotated code](https://fauxilla.github.io/ircmon/lib/index.js.html)
 
-## unrar dependency
-
-For any of the install / run methods listed below you'll need `unrar` in your path.
-
-In windows, the easiest way to achieve this is:
-
- * download `UnRAR for Windows` [from rarlab](https://www.rarlab.com/rar_add.htm)
- * extract to root folder (if running from source) or the same folder as the binary (if running binary)
- * rename it to `unrar.exe`
-
-## download & run binaries
+## download & run binaries (not available yet)
 
 This is convenient because you don't need to install nodejs & npm.
 
- * go to [release page](https://github.com/fauxilla/undiscombobulate/releases) & download binary
+ * go to [release page](https://github.com/fauxilla/ircmon/releases) & download binary
  * copy `config.sample.hjson` from this repo to `config.hjson` in the same
    directory as your binary and configure paths
    [hjson reference](http://hjson.org/)
@@ -40,7 +33,7 @@ This is convenient because you don't need to install nodejs & npm.
  * `npm run babel` to transpile code
  * start with `npm start`
 
-## clone repo & build your own binaries
+## clone repo & build your own binaries (not available yet)
 
  * clone this repo
  * `npm i` to get dependencies
@@ -52,63 +45,21 @@ This is convenient because you don't need to install nodejs & npm.
 
 __debug info__
 
-If you run from source and initiate with `npm start` debug info will be written to the console. When running from binaries, you'd need to set a `DEBUG` environment variable to `undisco*` In linux, this is achieved with a command like `DEBUG=undisco* ./undisco-linux-x64`.
+If you run from source and initiate with `npm start` debug info will be written to the console. When running from binaries, you'd need to set a `DEBUG` environment variable to `undisco*` In linux, this is achieved with a command like `DEBUG=undisco* ./ircmon-linux-x64`.
 
 __command line args__
 
 Run with no params to see usage info.
 
-If you're running from source the commands look like `npm start -- watch -p /srv/downloads`
+If you're running from source the commands look like `npm start -- watch -l info`
 
-## run as a service (linux)
+## run as a service (linux) (not available yet)
 
-  * copy binary or clone repo to `/opt/undiscombobulate`
-  * create config in that dir
-  * copy `undiscombobulate.service` into `/etc/systemd/system`
-  * modify `ExecStart` and `WorkingDirectory` paths in that file
-  * make your entry point executable, so `chmod +x dist/index.js` if you're running from source or `chmod +x undisco-linux-x64` if you're running binaries
-  * make `dist/service.js` executable as in `chmod +x dist/service.js`
-  * start with `sudo systemctl start undiscombobulate.service`
-  * check logs with `sudo journalctl -u undiscombobulate.service`
-  * start on boot with `sudo systemctl enable undiscombobulate.service`
+
 
 ## run as a service (windows)
 
 no idea how to do this sorry.. help wanted.
-
-## watching vs polling
-
-In the options you can specify a watch option (true / false) or a poll option
-(minutes or false). Watching file systems in general is pretty shady, it might
-work for you, it might not. Polling isnt great either because theres always
-a delay, and your hard drives wont go to sleep. So try watching and if that
-doesn't work fall back to polling.
-
-## modules
-
-Undisco has a modular architecture, and is very easy to extend. You could create your own module in the root dir, then add the full list of modules to `config.hjson`
-with the path `../myModule`. It might look like this:
-
-```
-{
-  modules: [
-    listFiles
-    skip
-    unrar
-    readNfo
-    parseName
-    tmdb
-    ../myModule
-    placeholders
-    ignore
-    destPaths
-    copy
-    clean
-  ]
-}
-```
-
-Take a look in `/modules/` for examples of how modules work.
 
 ## scripts
 
