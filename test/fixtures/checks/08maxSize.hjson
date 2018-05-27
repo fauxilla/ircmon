@@ -5,19 +5,14 @@
     siteName: iptorrents
     nick: fauxnom_autodl
     password: ''
-    cookies: [
-      uid=1774557
-      pass=89dfee1dc460936e6c8719993390c0f5
-    ]
     tests: [
       Dancing\sWith
-      !720p
-      !XXX
     ],
-    # frequency: 5m
-    # minSize: 100 MB
-    maxSize: 50 GB
-    mode: persist
+    series: 2
+    episode: 2
+    minSize: 100 MB
+    maxSize: 1 GB
+    mode: series
   },
   opt: {
     downloadTo: deluge
@@ -31,5 +26,5 @@
       path: /srv/blackHole
     }
   },
-  message: "[TV/x265] Dancing With The Stars NZ S07E08 720p HEVC x265-MeGusta - http://www.iptorrents.com/details.php?id=2842766 - 1.5 GB"
+  message: "[TV/x265] Dancing With The Stars NZ 720p S02E04 HEVC x265-MeGusta - http://www.iptorrents.com/details.php?id=2842766 - 1.5 GB"
 }

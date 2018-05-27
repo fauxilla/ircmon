@@ -5,17 +5,14 @@
     siteName: iptorrents
     nick: fauxnom_autodl
     password: ''
-    cookies: [
-      uid=1774557
-      pass=89dfee1dc460936e6c8719993390c0f5
-    ]
     tests: [
       Dancing\sWith
     ],
     series: 2
     episode: 2
+    frequency: 1 min
     minSize: 100 MB
-    maxSize: 1 GB
+    maxSize: 2 GB
     mode: series
   },
   opt: {

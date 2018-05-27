@@ -5,10 +5,6 @@
     siteName: iptorrents
     nick: fauxnom_autodl
     password: ''
-    cookies: [
-      uid=1774557
-      pass=89dfee1dc460936e6c8719993390c0f5
-    ]
     tests: [
       Dancing\sWith
     ],

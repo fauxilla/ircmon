@@ -1,8 +1,9 @@
 // import {
 //   back as nockBack
 // } from 'nock'
-import assert from 'assert'
-import debug from 'debug'
+import {
+  equal
+} from 'assert'
 import Listener from '../lib/Listener'
 import {
   stub
@@ -30,9 +31,6 @@ import {
   emptyDirSync
 } from 'fs-extra'
 
-// eslint-disable-next-line no-unused-vars
-const dbg = debug('undisco:test')
-
 /**
  * nockBack records http requests and replays them next time the tests are run
  * the first time you run these tests, the requests will be sent to
@@ -43,11 +41,13 @@ const dbg = debug('undisco:test')
 // nockBack.setMode('record')
 // nockBack.fixtures = 'test/fixtures/nockBack'
 
-async function getFixture (descriptor) {
-  const path = join('test', 'fixtures', `${descriptor}.hjson`)
+async function getHjson (descriptor) {
+  const path = join('test', 'fixtures', 'checks', `${descriptor}.hjson`)
   return parse(await readFile(path, 'utf8'))
 }
-describe('undisco', () => {
+let stubs
+
+describe('ircmon checks', () => {
   before(async () => {
     try {
       await unlink('test/.store')
@@ -59,9 +59,15 @@ describe('undisco', () => {
     emptyDirSync('test/blackHole')
 
     // newter irc Client
-    stub(Client.prototype, 'connect').callsArg(0)
-    stub(Client.prototype, 'join').callsArg(1)
-    stub(Listener.prototype, 'downloadTorrent').resolves()
+    stubs = [
+      stub(Client.prototype, 'connect').callsArg(0),
+      stub(Client.prototype, 'join').callsArg(1),
+      stub(Listener.prototype, 'downloadTorrent').resolves()
+    ]
+  })
+  after((done) => {
+    stubs.forEach((s) => s.restore())
+    done()
   })
   beforeEach(function () {
     // create spy
@@ -77,7 +83,7 @@ describe('undisco', () => {
     // cloudinary.api.resources.restore()
   })
   it('check: announced by announcer', async () => {
-    const fixtures = await getFixture('01announcer')
+    const fixtures = await getHjson('01announcer')
     let { listener } = fixtures
     const {
       opt,
@@ -91,11 +97,11 @@ describe('undisco', () => {
       null,
       message
     )
-    assert.equal(listener.checkError.code, 'announcer')
+    equal(listener.checkError.code, 'announcer')
     listener.connection.removeAllListeners('message')
   })
   it('check: no match', async () => {
-    const fixtures = await getFixture('02match')
+    const fixtures = await getHjson('02match')
     let { listener } = fixtures
     const {
       opt,
@@ -109,11 +115,11 @@ describe('undisco', () => {
       null,
       message
     )
-    assert.equal(listener.checkError.code, 'match')
+    equal(listener.checkError.code, 'match')
     listener.connection.removeAllListeners('message')
   })
   it('check: series mode, msg contains SxxExx', async () => {
-    const fixtures = await getFixture('03noSeriesEp')
+    const fixtures = await getHjson('03noSeriesEp')
     let { listener } = fixtures
     const {
       opt,
@@ -127,11 +133,11 @@ describe('undisco', () => {
       null,
       message
     )
-    assert.equal(listener.checkError.code, 'noSeriesEp')
+    equal(listener.checkError.code, 'noSeriesEp')
     listener.connection.removeAllListeners('message')
   })
   it('check: series mode, old series', async () => {
-    const fixtures = await getFixture('04series')
+    const fixtures = await getHjson('04series')
     let { listener } = fixtures
     const {
       opt,
@@ -145,11 +151,11 @@ describe('undisco', () => {
       null,
       message
     )
-    assert.equal(listener.checkError.code, 'series')
+    equal(listener.checkError.code, 'series')
     listener.connection.removeAllListeners('message')
   })
   it('check: series mode, old ep', async () => {
-    const fixtures = await getFixture('05episode')
+    const fixtures = await getHjson('05episode')
     let { listener } = fixtures
     const {
       opt,
@@ -163,11 +169,11 @@ describe('undisco', () => {
       null,
       message
     )
-    assert.equal(listener.checkError.code, 'episode')
+    equal(listener.checkError.code, 'episode')
     listener.connection.removeAllListeners('message')
   })
   it('check: series mode, increment ep', async () => {
-    const fixtures = await getFixture('06incrementEpisode')
+    const fixtures = await getHjson('06incrementEpisode')
     let { listener } = fixtures
     const {
       opt,
@@ -181,7 +187,7 @@ describe('undisco', () => {
       null,
       message
     )
-    assert.equal(listener.checkError, undefined)
+    equal(listener.checkError, undefined)
     // not possible to await event handler
     await new Promise((resolve) => setTimeout(resolve, 250))
     // same message twice
@@ -191,11 +197,11 @@ describe('undisco', () => {
       null,
       message
     )
-    assert.equal(listener.checkError.code, 'episode')
+    equal(listener.checkError.code, 'episode')
     listener.connection.removeAllListeners('message')
   })
   it('check: minSize', async () => {
-    const fixtures = await getFixture('07minSize')
+    const fixtures = await getHjson('07minSize')
     let { listener } = fixtures
     const {
       opt,
@@ -209,11 +215,11 @@ describe('undisco', () => {
       null,
       message
     )
-    assert.equal(listener.checkError.code, 'minSize')
+    equal(listener.checkError.code, 'minSize')
     listener.connection.removeAllListeners('message')
   })
   it('check: maxSize', async () => {
-    const fixtures = await getFixture('08maxSize')
+    const fixtures = await getHjson('08maxSize')
     let { listener } = fixtures
     const {
       opt,
@@ -227,11 +233,11 @@ describe('undisco', () => {
       null,
       message
     )
-    assert.equal(listener.checkError.code, 'maxSize')
+    equal(listener.checkError.code, 'maxSize')
     listener.connection.removeAllListeners('message')
   })
   it('check: frequency', async () => {
-    const fixtures = await getFixture('09frequency')
+    const fixtures = await getHjson('09frequency')
     let { listener } = fixtures
     const {
       opt,
@@ -245,7 +251,7 @@ describe('undisco', () => {
       null,
       message
     )
-    assert.equal(listener.checkError.code, 'frequency')
+    equal(listener.checkError.code, 'frequency')
     listener.connection.removeAllListeners('message')
   })
 })
