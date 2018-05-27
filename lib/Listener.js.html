@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Listener.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../doc-style.css" />
+  <script src="../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../";
+    var thisFile = "lib/Listener.js";
+    var defaultSidebar = true;
+  </script>
+  <script src="../doc-script.js"></script>
+
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+
+      <div class="heading h2">
+        <a href="#listener">Listener</a>
+      </div>
+
+      <div class="heading h2">
+        <a href="#constructor-1">constructor</a>
+      </div>
+
+      <div class="heading h2">
+        <a href="#init">init</a>
+      </div>
+
+      <div class="heading h2">
+        <a href="#getlog">getLog</a>
+      </div>
+
+      <div class="heading h2">
+        <a href="#parse">parse</a>
+      </div>
+
+      <div class="heading h2">
+        <a href="#handler">handler</a>
+      </div>
+
+      <div class="heading h2">
+        <a href="#downloadtorrent">downloadTorrent</a>
+      </div>
+
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container">
+    <div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+    
+      <tr>
+        <td class="docs">
+          <h1>Listener.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+    
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1"></a>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-keyword">import</span> {
+  log,
+  levels <span class="hljs-keyword">as</span> logLevels
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'./log'</span>
+<span class="hljs-keyword">import</span> Connection <span class="hljs-keyword">from</span> <span class="hljs-string">'./Connection'</span>
+<span class="hljs-keyword">import</span> format <span class="hljs-keyword">from</span> <span class="hljs-string">'string-template'</span>
+<span class="hljs-keyword">import</span> {
+  parse <span class="hljs-keyword">as</span> parseBytes
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'human-format'</span>
+<span class="hljs-keyword">import</span> stringToRegExp <span class="hljs-keyword">from</span> <span class="hljs-string">'string-to-regexp'</span>
+<span class="hljs-keyword">import</span> loadSite <span class="hljs-keyword">from</span> <span class="hljs-string">'./loadSite'</span>
+<span class="hljs-keyword">import</span> {
+  mapValues,
+  pick
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'lodash'</span>
+<span class="hljs-keyword">import</span> {
+  find,
+  upsert
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'./db'</span>
+<span class="hljs-keyword">import</span> {
+  check
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'./check'</span>
+<span class="hljs-keyword">import</span> Err <span class="hljs-keyword">from</span> <span class="hljs-string">'./Err'</span>
+<span class="hljs-keyword">import</span> {
+  deluge,
+  blackHole
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'./downloaders'</span>
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="dox">
+<div class="summary">
+<div class="pilwrap" id="listener">
+  <h2>
+    <a href="#listener" name="listener" class="pilcrow"></a>
+Listener
+  </h2>
+</div>
+<p>Listener class responsible for creating irc connection, monitoring it,
+and handling matched files.</p>
+</div>
+<div class="body">
+</div>
+<div class="details">
+<div class="dox_tag_title">Type</div>
+<div class="dox_tag_detail">
+<span class="dox_type">Listener</span>
+</div>
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Listener</span> </span>{
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="dox">
+<div class="summary">
+<div class="pilwrap" id="constructor-1">
+  <h2>
+    <a href="#constructor-1" name="constructor-1" class="pilcrow"></a>
+constructor
+  </h2>
+</div>
+<p>strictly limited to parsing options</p>
+</div>
+<div class="body">
+</div>
+<div class="details">
+<div class="dox_tag_title">Params</div>
+<div class="dox_tag_detail">
+<span class="dox_tag_name">listener</span>
+<span class="dox_type">Object</span>
+<span>listener settings
+</span>
+</div>
+<div class="dox_tag_detail">
+<span class="dox_tag_name">opt</span>
+<span class="dox_type">Object</span>
+</div>
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">  <span class="hljs-keyword">constructor</span> (listener, opt) {
+    <span class="hljs-built_in">Object</span>.assign(<span class="hljs-keyword">this</span>, listener)
+    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.siteName) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'siteName is required'</span>)
+    <span class="hljs-keyword">this</span>.opt = opt
+    <span class="hljs-keyword">this</span>.log = <span class="hljs-keyword">this</span>.getLog()
+    <span class="hljs-keyword">this</span>.descriptor = <span class="hljs-keyword">this</span>.descriptor || <span class="hljs-keyword">this</span>.siteName
+    <span class="hljs-keyword">this</span>.tests = <span class="hljs-keyword">this</span>.tests || []
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4"></a>
+</div>
+<p>split tests into positive &amp; negative matches. See check</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    this.tests = {
+      positive: this.tests
+        .filter((test) =&gt; !/^!/.exec(test))
+        .map(stringToRegExp),
+      negative: this.tests
+        .filter((test) =&gt; /^!/.exec(test))
+        .map((test) =&gt; stringToRegExp(test.slice(1)))
+    }
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5"></a>
+</div>
+<p>allow use of &gt; when checking episode</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.episode) <span class="hljs-keyword">this</span>.episode -= <span class="hljs-number">1</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.minSize) {
+      <span class="hljs-keyword">this</span>.minSize = parseBytes(<span class="hljs-keyword">this</span>.minSize)
+    }
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.maxSize) {
+      <span class="hljs-keyword">this</span>.maxSize = parseBytes(<span class="hljs-keyword">this</span>.maxSize)
+    }
+  }
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="dox">
+<div class="summary">
+<div class="pilwrap" id="init">
+  <h2>
+    <a href="#init" name="init" class="pilcrow"></a>
+init
+  </h2>
+</div>
+<p>async initialisation. must be called.</p>
+</div>
+<div class="body">
+</div>
+<div class="details">
+<div class="dox_tag_title">Returns</div>
+<div class="dox_tag_detail">
+<span class="dox_tag_name"></span>
+<span class="dox_type">Promise</span>
+<span>resolves when initialised
+</span>
+</div>
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">  <span class="hljs-keyword">async</span> init () {
+    <span class="hljs-keyword">const</span> {
+      nick,
+      siteName,
+      descriptor
+    } = <span class="hljs-keyword">this</span>
+    <span class="hljs-keyword">this</span>.site = <span class="hljs-keyword">await</span> loadSite(siteName)
+    <span class="hljs-keyword">const</span> {
+      network,
+      host,
+      port,
+      channels
+    } = <span class="hljs-keyword">this</span>.site
+    <span class="hljs-keyword">this</span>.log.info(<span class="hljs-string">`connecting to <span class="hljs-subst">${network}</span>`</span>)
+    <span class="hljs-keyword">this</span>.connection = <span class="hljs-keyword">new</span> Connection(network, host, port, nick)
+    <span class="hljs-keyword">this</span>.connection.join(channels)
+    <span class="hljs-keyword">this</span>.connection.addListener(<span class="hljs-string">'message'</span>, <span class="hljs-keyword">this</span>.handler.bind(<span class="hljs-keyword">this</span>))
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-7" id="section-7"></a>
+</div>
+<p>get last match info from db</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-built_in">Object</span>.assign(<span class="hljs-keyword">this</span>, <span class="hljs-keyword">await</span> find(descriptor))
+  }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="dox">
+<div class="summary">
+<div class="pilwrap" id="getlog">
+  <h2>
+    <a href="#getlog" name="getlog" class="pilcrow"></a>
+getLog
+  </h2>
+</div>
+<p>creates bound log functions with descriptor.
+allos usage like:</p>
+<pre><code>const { debug } = this.log
+debug('hello')
+</code></pre>
+</div>
+<div class="body">
+</div>
+<div class="details">
+<div class="dox_tag_title">Returns</div>
+<div class="dox_tag_detail">
+<span class="dox_tag_name"></span>
+<span class="dox_type">Object</span>
+<span>plain object with log level methods
+</span>
+</div>
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">  getLog () {
+    <span class="hljs-keyword">const</span> {
+      descriptor
+    } = <span class="hljs-keyword">this</span>
+    <span class="hljs-keyword">const</span> _log = log.child({ descriptor })
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Object</span>.assign(
+      {},
+      ...Object.values(logLevels).map(<span class="hljs-function">(<span class="hljs-params">level</span>) =&gt;</span> ({
+        [level]: _log[level].bind(_log)
+      })
+    ))
+  }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="dox">
+<div class="summary">
+<div class="pilwrap" id="parse">
+  <h2>
+    <a href="#parse" name="parse" class="pilcrow"></a>
+parse
+  </h2>
+</div>
+<p>parse message according to placeholders in site definition, as well as
+season / ep if appropriate</p>
+</div>
+<div class="body">
+</div>
+<div class="details">
+<div class="dox_tag_title">Params</div>
+<div class="dox_tag_detail">
+<span class="dox_tag_name">message</span>
+<span class="dox_type">String</span>
+<span>irc message, stripped
+</span>
+</div>
+<div class="dox_tag_detail">
+<span class="dox_tag_name">from</span>
+<span class="dox_type">String</span>
+<span>username of message author
+</span>
+</div>
+<div class="dox_tag_title">Returns</div>
+<div class="dox_tag_detail">
+<span class="dox_tag_name"></span>
+<span class="dox_type">Object</span>
+<span>map of resolved placeholders
+</span>
+</div>
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">  parse (message, <span class="hljs-keyword">from</span>) {
+    <span class="hljs-keyword">let</span> { placeholders } = <span class="hljs-keyword">this</span>.site
+    <span class="hljs-keyword">const</span> {
+      <span class="hljs-attr">site</span>: { uriTemplate },
+      <span class="hljs-attr">log</span>: { error }
+    } = <span class="hljs-keyword">this</span>
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-10" id="section-10"></a>
+</div>
+<p>placeholders in site def are compulsory</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">const</span> torrent = mapValues(placeholders, (placeholder, key) =&gt; {
+      <span class="hljs-keyword">const</span> result = placeholder.exec(message)
+      <span class="hljs-keyword">return</span> result ? result[<span class="hljs-number">1</span>] : <span class="hljs-literal">false</span>
+    })
+    <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">Object</span>.values(torrent).every(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> e)) {
+      error({ <span class="hljs-attr">meta</span>: torrent }, <span class="hljs-string">'could not parse message'</span>)
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Err(<span class="hljs-string">'parse'</span>, <span class="hljs-string">'could not parse, check site definition'</span>)
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-11" id="section-11"></a>
+</div>
+<p>try series / ep regardless of mode, fail silently</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">const</span> series = <span class="hljs-regexp">/S(\d{2})E\d{2}/i</span>.exec(message)
+    torrent.series = series ? <span class="hljs-built_in">parseInt</span>(series[<span class="hljs-number">1</span>]) : <span class="hljs-literal">false</span>
+    <span class="hljs-keyword">const</span> episode = <span class="hljs-regexp">/S\d{2}E(\d{2})/i</span>.exec(message)
+    torrent.episode = episode ? <span class="hljs-built_in">parseInt</span>(episode[<span class="hljs-number">1</span>]) : <span class="hljs-literal">false</span>
+
+    torrent.size = parseBytes(torrent.size)
+    torrent.file = torrent.name.replace(<span class="hljs-regexp">/\s/g</span>, <span class="hljs-string">'.'</span>) + <span class="hljs-string">'.torrent'</span>
+    torrent.uri = format(
+      uriTemplate,
+      <span class="hljs-built_in">Object</span>.assign({}, torrent, <span class="hljs-keyword">this</span>.site)
+    )
+    torrent.announcer = <span class="hljs-keyword">from</span>
+    torrent.message = message
+    <span class="hljs-keyword">return</span> torrent
+  }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="dox">
+<div class="summary">
+<div class="pilwrap" id="handler">
+  <h2>
+    <a href="#handler" name="handler" class="pilcrow"></a>
+handler
+  </h2>
+</div>
+<p>attached to message listener.</p>
+<ul>
+<li>parse message</li>
+<li>checks</li>
+<li>download torrent</li>
+</ul>
+</div>
+<div class="body">
+</div>
+<div class="details">
+<div class="dox_tag_title">Params</div>
+<div class="dox_tag_detail">
+<span class="dox_tag_name">from</span>
+<span class="dox_type">String</span>
+<span>username of author
+</span>
+</div>
+<div class="dox_tag_detail">
+<span class="dox_tag_name">to</span>
+<span class="dox_type">String</span>
+<span>unused
+</span>
+</div>
+<div class="dox_tag_detail">
+<span class="dox_tag_name">message</span>
+<span class="dox_type">String</span>
+<span>message, stripped
+</span>
+</div>
+<div class="dox_tag_title">Returns</div>
+<div class="dox_tag_detail">
+<span class="dox_tag_name"></span>
+<span class="dox_type">Promise</span>
+<span>resolves on completion
+</span>
+</div>
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">  <span class="hljs-keyword">async</span> handler (<span class="hljs-keyword">from</span>, to, message) {
+    <span class="hljs-keyword">const</span> {
+      descriptor
+    } = <span class="hljs-keyword">this</span>
+    <span class="hljs-keyword">const</span> {
+      debug,
+      info,
+      error
+    } = <span class="hljs-keyword">this</span>.log
+
+    debug(<span class="hljs-string">'checking message'</span>)
+
+    <span class="hljs-keyword">let</span> torrent
+    <span class="hljs-keyword">try</span> {
+      torrent = <span class="hljs-keyword">this</span>.parse(message, <span class="hljs-keyword">from</span>)
+      check(torrent, <span class="hljs-keyword">this</span>)
+      info(message)
+      debug(<span class="hljs-string">'passed all checks'</span>)
+      <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.downloadTorrent(torrent)
+    } <span class="hljs-keyword">catch</span> (err) {
+      <span class="hljs-keyword">if</span> (err <span class="hljs-keyword">instanceof</span> Err) {
+        <span class="hljs-keyword">this</span>.checkError = err
+        debug(message)
+        debug(<span class="hljs-string">`ignore: <span class="hljs-subst">${err.message}</span>`</span>)
+        <span class="hljs-keyword">return</span>
+      }
+      error({ <span class="hljs-attr">meta</span>: torrent }, <span class="hljs-string">'error downloading torrent'</span>)
+      <span class="hljs-keyword">throw</span> err
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-13" id="section-13"></a>
+</div>
+<p>update instance</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.series = torrent.series
+    <span class="hljs-keyword">this</span>.episode = torrent.episode
+    <span class="hljs-keyword">this</span>.lastAt = <span class="hljs-built_in">Date</span>.now()
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-14" id="section-14"></a>
+</div>
+<p>update db</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">await</span> upsert(
+      descriptor,
+      pick(<span class="hljs-keyword">this</span>, [ <span class="hljs-string">'descriptor'</span>, <span class="hljs-string">'series'</span>, <span class="hljs-string">'episode'</span>, <span class="hljs-string">'lastAt'</span> ])
+    )
+  }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="dox">
+<div class="summary">
+<div class="pilwrap" id="downloadtorrent">
+  <h2>
+    <a href="#downloadtorrent" name="downloadtorrent" class="pilcrow"></a>
+downloadTorrent
+  </h2>
+</div>
+</div>
+<div class="body">
+</div>
+<div class="details">
+<div class="dox_tag_title">Params</div>
+<div class="dox_tag_detail">
+<span class="dox_tag_name">torrent</span>
+<span class="dox_type">Object</span>
+<span>from parse fn
+</span>
+</div>
+<div class="dox_tag_title">Returns</div>
+<div class="dox_tag_detail">
+<span class="dox_tag_name"></span>
+<span class="dox_type">Promise</span>
+</div>
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">  <span class="hljs-keyword">async</span> downloadTorrent (torrent) {
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.test) <span class="hljs-keyword">return</span>
+    <span class="hljs-keyword">const</span> {
+      downloadTo
+    } = <span class="hljs-keyword">this</span>.opt
+    <span class="hljs-keyword">const</span> {
+      error
+    } = <span class="hljs-keyword">this</span>.log
+    <span class="hljs-keyword">try</span> {
+      <span class="hljs-keyword">switch</span> (downloadTo) {
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'deluge'</span>:
+          <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> deluge(torrent)
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'blackHole'</span>:
+          <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> blackHole(torrent)
+        <span class="hljs-keyword">default</span>:
+          error(<span class="hljs-string">`no downloadTo option: <span class="hljs-subst">${downloadTo}</span>`</span>)
+      }
+    } <span class="hljs-keyword">catch</span> (err) {
+      error({ <span class="hljs-attr">error</span>: err }, <span class="hljs-string">'error downloading torrent'</span>)
+    }
+  }
+
+}
+
+</pre>
+        </td>
+      </tr>
+    
+  </tbody>
+</table>
+
+  </div>
+</body>
+</html>

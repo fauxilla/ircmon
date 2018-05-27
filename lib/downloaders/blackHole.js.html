@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>blackHole.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../";
+    var thisFile = "lib/downloaders/blackHole.js";
+    var defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container">
+    <div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+    
+      <tr>
+        <td class="docs">
+          <h1>blackHole.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+    
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1"></a>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-keyword">import</span> request <span class="hljs-keyword">from</span> <span class="hljs-string">'request'</span>
+<span class="hljs-keyword">import</span> {
+  join
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span>
+<span class="hljs-keyword">import</span> {
+  createWriteStream
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'fs'</span>
+<span class="hljs-keyword">import</span> {
+  ensureDirSync
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'fs-extra'</span>
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">downloader</span> (<span class="hljs-params">torrent</span>) </span>{
+  <span class="hljs-keyword">const</span> {
+    cookies
+  } = <span class="hljs-keyword">this</span>
+  <span class="hljs-keyword">const</span> {
+    <span class="hljs-attr">blackHole</span>: {
+      path
+    }
+  } = <span class="hljs-keyword">this</span>.opt
+  <span class="hljs-keyword">const</span> {
+    uri,
+    file
+  } = torrent
+  ensureDirSync(path)
+  <span class="hljs-keyword">const</span> headers = { <span class="hljs-attr">Cookie</span>: cookies.join(<span class="hljs-string">';'</span>) }
+  <span class="hljs-keyword">this</span>.log.debug(<span class="hljs-string">`requesting <span class="hljs-subst">${uri}</span>`</span>)
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+    request.get({ uri, headers })
+      .pipe(createWriteStream(join(path, file)))
+      .on(<span class="hljs-string">'close'</span>, () =&gt; {
+        <span class="hljs-keyword">this</span>.log.info(<span class="hljs-string">`wrote <span class="hljs-subst">${file}</span> to path`</span>)
+        resolve()
+      })
+  })
+}
+
+</pre>
+        </td>
+      </tr>
+    
+  </tbody>
+</table>
+
+  </div>
+</body>
+</html>

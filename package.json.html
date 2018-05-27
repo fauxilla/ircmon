@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>package.json</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="doc-style.css" />
+  <script src="doc-filelist.js"></script>
+  <script>
+    var relativeDir = "";
+    var thisFile = "package.json";
+    var defaultSidebar = true;
+  </script>
+  <script src="doc-script.js"></script>
+
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container">
+    <div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+    
+      <tr>
+        <td class="docs">
+          <h1>package.json</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+    
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1"></a>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="json">{
+  <span class="hljs-attr">"name"</span>: <span class="hljs-string">"ircmon"</span>,
+  <span class="hljs-attr">"author"</span>: <span class="hljs-string">"fauxilla &lt;fauxilla@protonmail.com&gt;"</span>,
+  <span class="hljs-attr">"description"</span>: <span class="hljs-string">"monitor irc announce channels and download matched releases"</span>,
+  <span class="hljs-attr">"repository"</span>: {
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"git"</span>,
+    <span class="hljs-attr">"url"</span>: <span class="hljs-string">"git://github.com/fauxilla/ircmon.git"</span>
+  },
+  <span class="hljs-attr">"homepage"</span>: <span class="hljs-string">"http://fauxilla.github.io/ircmon"</span>,
+  <span class="hljs-attr">"version"</span>: <span class="hljs-string">"1.0.0"</span>,
+  <span class="hljs-attr">"keywords"</span>: [
+    <span class="hljs-string">"torrent"</span>,
+    <span class="hljs-string">"irc"</span>
+  ],
+  <span class="hljs-attr">"bugs"</span>: {
+    <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://github.com/fauxilla/ircmon/issues"</span>
+  },
+  <span class="hljs-attr">"license"</span>: <span class="hljs-string">"MIT"</span>,
+  <span class="hljs-attr">"main"</span>: <span class="hljs-string">"dist/index"</span>,
+  <span class="hljs-attr">"bin"</span>: {
+    <span class="hljs-attr">"undiscombobulate"</span>: <span class="hljs-string">"dist/index.js"</span>
+  },
+  <span class="hljs-attr">"scripts"</span>: {
+    <span class="hljs-attr">"start"</span>: <span class="hljs-string">"cross-env DEBUG=undisco* node dist"</span>,
+    <span class="hljs-attr">"build"</span>: <span class="hljs-string">"npm run babel &amp;&amp; npm run client:prodn &amp;&amp; npm run docs &amp;&amp; cp docs/README.md.html docs/index.html &amp;&amp; npm run gh-pages"</span>,
+    <span class="hljs-attr">"readme"</span>: <span class="hljs-string">"node-readme"</span>,
+    <span class="hljs-attr">"babel"</span>: <span class="hljs-string">"babel lib -d dist --ignore client"</span>,
+    <span class="hljs-attr">"babel:watch"</span>: <span class="hljs-string">"babel lib --watch -d dist --ignore client"</span>,
+    <span class="hljs-attr">"test"</span>: <span class="hljs-string">"cross-env DEBUG=undisco* NODE_ENV=test mocha --compilers js:babel-register test/*Test.js"</span>,
+    <span class="hljs-attr">"test:watch"</span>: <span class="hljs-string">"cross-env DEBUG=undisco* NODE_ENV=test mocha --compilers js:babel-register --watch test"</span>,
+    <span class="hljs-attr">"docs"</span>: <span class="hljs-string">"npm run readme &amp;&amp; rm -fr ./docs/* &amp;&amp; docker -o ./docs -I -x dist,.README.md,test/fixtures,node_modules,docs"</span>,
+    <span class="hljs-attr">"gh-pages"</span>: <span class="hljs-string">"gh-pages -d docs"</span>,
+    <span class="hljs-attr">"pkg-linux"</span>: <span class="hljs-string">"pkg . --targets node8-linux --output bin/undisco-linux-x64"</span>,
+    <span class="hljs-attr">"pkg-win"</span>: <span class="hljs-string">"pkg . --targets node8-win --output bin/undisco-win-x64.exe"</span>,
+    <span class="hljs-attr">"pkg"</span>: <span class="hljs-string">"npm run pkg-linux &amp;&amp; npm run pkg-win"</span>
+  },
+  <span class="hljs-attr">"dependencies"</span>: {
+    <span class="hljs-attr">"babel-eslint"</span>: <span class="hljs-string">"^8.2.3"</span>,
+    <span class="hljs-attr">"bunyan"</span>: <span class="hljs-string">"^1.8.12"</span>,
+    <span class="hljs-attr">"chalk"</span>: <span class="hljs-string">"^2.4.1"</span>,
+    <span class="hljs-attr">"chokidar"</span>: <span class="hljs-string">"^2.0.3"</span>,
+    <span class="hljs-attr">"cli-progress-bar"</span>: <span class="hljs-string">"^1.0.1"</span>,
+    <span class="hljs-attr">"command-line-args"</span>: <span class="hljs-string">"^5.0.2"</span>,
+    <span class="hljs-attr">"command-line-usage"</span>: <span class="hljs-string">"^5.0.5"</span>,
+    <span class="hljs-attr">"cuid"</span>: <span class="hljs-string">"^2.1.1"</span>,
+    <span class="hljs-attr">"debug"</span>: <span class="hljs-string">"^2.6.8"</span>,
+    <span class="hljs-attr">"deluge"</span>: <span class="hljs-string">"github:ginman86/deluge"</span>,
+    <span class="hljs-attr">"flashheart"</span>: <span class="hljs-string">"^2.9.0"</span>,
+    <span class="hljs-attr">"font-ascii"</span>: <span class="hljs-string">"^1.1.16"</span>,
+    <span class="hljs-attr">"fs-extra"</span>: <span class="hljs-string">"^5.0.0"</span>,
+    <span class="hljs-attr">"hjson"</span>: <span class="hljs-string">"^3.1.1"</span>,
+    <span class="hljs-attr">"human-format"</span>: <span class="hljs-string">"^0.10.0"</span>,
+    <span class="hljs-attr">"irc"</span>: <span class="hljs-string">"^0.5.2"</span>,
+    <span class="hljs-attr">"lodash"</span>: <span class="hljs-string">"^4.17.10"</span>,
+    <span class="hljs-attr">"multimatch"</span>: <span class="hljs-string">"^2.1.0"</span>,
+    <span class="hljs-attr">"mz"</span>: <span class="hljs-string">"^2.7.0"</span>,
+    <span class="hljs-attr">"nedb"</span>: <span class="hljs-string">"^1.8.0"</span>,
+    <span class="hljs-attr">"pretty-bytes"</span>: <span class="hljs-string">"^4.0.2"</span>,
+    <span class="hljs-attr">"pretty-ms"</span>: <span class="hljs-string">"^3.1.0"</span>,
+    <span class="hljs-attr">"prettyjson"</span>: <span class="hljs-string">"^1.2.1"</span>,
+    <span class="hljs-attr">"progress-stream"</span>: <span class="hljs-string">"^2.0.0"</span>,
+    <span class="hljs-attr">"request"</span>: <span class="hljs-string">"^2.85.0"</span>,
+    <span class="hljs-attr">"sequelize"</span>: <span class="hljs-string">"^4.37.6"</span>,
+    <span class="hljs-attr">"sqlite3"</span>: <span class="hljs-string">"^4.0.0"</span>,
+    <span class="hljs-attr">"string-template"</span>: <span class="hljs-string">"^1.0.0"</span>,
+    <span class="hljs-attr">"string-to-regexp"</span>: <span class="hljs-string">"^0.1.0"</span>,
+    <span class="hljs-attr">"timestring"</span>: <span class="hljs-string">"^5.0.1"</span>,
+    <span class="hljs-attr">"unrar"</span>: <span class="hljs-string">"^0.1.7"</span>,
+    <span class="hljs-attr">"winston"</span>: <span class="hljs-string">"^2.4.2"</span>,
+    <span class="hljs-attr">"xml2js"</span>: <span class="hljs-string">"^0.4.19"</span>
+  },
+  <span class="hljs-attr">"devDependencies"</span>: {
+    <span class="hljs-attr">"babel-cli"</span>: <span class="hljs-string">"^6.16.0"</span>,
+    <span class="hljs-attr">"babel-core"</span>: <span class="hljs-string">"^6.17.0"</span>,
+    <span class="hljs-attr">"babel-polyfill"</span>: <span class="hljs-string">"^6.26.0"</span>,
+    <span class="hljs-attr">"babel-preset-env"</span>: <span class="hljs-string">"^1.6.1"</span>,
+    <span class="hljs-attr">"babel-register"</span>: <span class="hljs-string">"^6.26.0"</span>,
+    <span class="hljs-attr">"cross-env"</span>: <span class="hljs-string">"^3.1.3"</span>,
+    <span class="hljs-attr">"docker"</span>: <span class="hljs-string">"^1.0.0"</span>,
+    <span class="hljs-attr">"documentation"</span>: <span class="hljs-string">"^7.1.0"</span>,
+    <span class="hljs-attr">"eslint"</span>: <span class="hljs-string">"^3.7.1"</span>,
+    <span class="hljs-attr">"eslint-config-standard"</span>: <span class="hljs-string">"^6.2.0"</span>,
+    <span class="hljs-attr">"eslint-plugin-babel"</span>: <span class="hljs-string">"^3.3.0"</span>,
+    <span class="hljs-attr">"eslint-plugin-import"</span>: <span class="hljs-string">"^2.12.0"</span>,
+    <span class="hljs-attr">"eslint-plugin-promise"</span>: <span class="hljs-string">"^3.0.0"</span>,
+    <span class="hljs-attr">"eslint-plugin-standard"</span>: <span class="hljs-string">"^2.0.1"</span>,
+    <span class="hljs-attr">"gh-pages"</span>: <span class="hljs-string">"^0.12.0"</span>,
+    <span class="hljs-attr">"mocha"</span>: <span class="hljs-string">"^5.1.1"</span>,
+    <span class="hljs-attr">"nock"</span>: <span class="hljs-string">"^9.2.5"</span>,
+    <span class="hljs-attr">"node-readme"</span>: <span class="hljs-string">"^0.1.9"</span>,
+    <span class="hljs-attr">"pkg"</span>: <span class="hljs-string">"^4.3.1"</span>,
+    <span class="hljs-attr">"sinon"</span>: <span class="hljs-string">"^4.5.0"</span>
+  },
+  <span class="hljs-attr">"eslintConfig"</span>: {
+    <span class="hljs-attr">"rules"</span>: {},
+    <span class="hljs-attr">"parser"</span>: <span class="hljs-string">"babel-eslint"</span>,
+    <span class="hljs-attr">"extends"</span>: <span class="hljs-string">"standard"</span>,
+    <span class="hljs-attr">"installedESLint"</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">"plugins"</span>: [
+      <span class="hljs-string">"standard"</span>,
+      <span class="hljs-string">"babel"</span>
+    ],
+    <span class="hljs-attr">"env"</span>: {
+      <span class="hljs-attr">"node"</span>: <span class="hljs-literal">true</span>,
+      <span class="hljs-attr">"mocha"</span>: <span class="hljs-literal">true</span>
+    }
+  },
+  <span class="hljs-attr">"pkg"</span>: {
+    <span class="hljs-attr">"scripts"</span>: <span class="hljs-string">"dist/modules/*.js"</span>,
+    <span class="hljs-attr">"assets"</span>: <span class="hljs-string">"config.sample.hjson"</span>
+  },
+  <span class="hljs-attr">"nyc"</span>: {
+    <span class="hljs-attr">"include"</span>: [
+      <span class="hljs-string">"lib/**/*.js"</span>
+    ],
+    <span class="hljs-attr">"require"</span>: [
+      <span class="hljs-string">"babel-register"</span>
+    ],
+    <span class="hljs-attr">"sourceMap"</span>: <span class="hljs-literal">false</span>,
+    <span class="hljs-attr">"instrument"</span>: <span class="hljs-literal">false</span>
+  },
+  <span class="hljs-attr">"directories"</span>: {
+    <span class="hljs-attr">"lib"</span>: <span class="hljs-string">"lib"</span>,
+    <span class="hljs-attr">"test"</span>: <span class="hljs-string">"test"</span>
+  }
+}
+
+</pre>
+        </td>
+      </tr>
+    
+  </tbody>
+</table>
+
+  </div>
+</body>
+</html>

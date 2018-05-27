@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>equalFixture.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../doc-style.css" />
+  <script src="../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../";
+    var thisFile = "test/equalFixture.js";
+    var defaultSidebar = true;
+  </script>
+  <script src="../doc-script.js"></script>
+
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container">
+    <div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+    
+      <tr>
+        <td class="docs">
+          <h1>equalFixture.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+    
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1"></a>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-keyword">import</span> {
+  readFile,
+  writeFile
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'mz/fs'</span>
+<span class="hljs-keyword">import</span> {
+  ok,
+  deepEqual
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'assert'</span>
+<span class="hljs-keyword">import</span> {
+  join
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span>
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">equalFixture</span> (<span class="hljs-params">dir</span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">async</span> (descriptor, actual, message) =&gt; {
+    <span class="hljs-keyword">const</span> path = join(dir, <span class="hljs-string">`<span class="hljs-subst">${descriptor}</span>Fixture.json`</span>)
+    <span class="hljs-keyword">let</span> expected
+    <span class="hljs-keyword">try</span> {
+      expected = <span class="hljs-built_in">JSON</span>.parse(<span class="hljs-keyword">await</span> readFile(path, <span class="hljs-string">'utf8'</span>))
+    } <span class="hljs-keyword">catch</span> (err) {
+      <span class="hljs-keyword">if</span> (err.code === <span class="hljs-string">'ENOENT'</span>) {
+        <span class="hljs-keyword">const</span> content = <span class="hljs-built_in">JSON</span>.stringify(actual, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>)
+        <span class="hljs-keyword">await</span> writeFile(path, content, <span class="hljs-string">'utf8'</span>)
+        <span class="hljs-keyword">const</span> msg = <span class="hljs-string">`no fixture "<span class="hljs-subst">${descriptor}</span>". wrote it. check &amp; re-run test`</span>
+        ok(<span class="hljs-literal">false</span>, msg)
+      }
+    }
+    deepEqual(actual, expected, message)
+  }
+}
+
+</pre>
+        </td>
+      </tr>
+    
+  </tbody>
+</table>
+
+  </div>
+</body>
+</html>

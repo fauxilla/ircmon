@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>README.md</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="doc-style.css" />
+  <script src="doc-filelist.js"></script>
+  <script>
+    var relativeDir = "";
+    var thisFile = "README.md";
+    var defaultSidebar = true;
+  </script>
+  <script src="doc-script.js"></script>
+
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+
+      <div class="heading h2">
+        <a href="#ircmon">ircmon</a>
+      </div>
+
+      <div class="heading h2">
+        <a href="#download-and-run-binaries-not-available-yet">download &amp;amp; run binaries (not available yet)</a>
+      </div>
+
+      <div class="heading h2">
+        <a href="#clone-repo-and-run-from-source">clone repo &amp;amp; run from source</a>
+      </div>
+
+      <div class="heading h2">
+        <a href="#clone-repo-and-build-your-own-binaries-not-available-yet">clone repo &amp;amp; build your own binaries (not available yet)</a>
+      </div>
+
+      <div class="heading h2">
+        <a href="#run-from-cli">run from cli</a>
+      </div>
+
+      <div class="heading h2">
+        <a href="#run-as-a-service-linux-not-available-yet">run as a service (linux) (not available yet)</a>
+      </div>
+
+      <div class="heading h2">
+        <a href="#run-as-a-service-windows">run as a service (windows)</a>
+      </div>
+
+      <div class="heading h2">
+        <a href="#scripts">scripts</a>
+      </div>
+
+      <div class="heading h3">
+        <a href="#usage">usage</a>
+      </div>
+
+      <div class="heading h3">
+        <a href="#log">log</a>
+      </div>
+
+      <div class="heading h2">
+        <a href="#developing-testing-contributing">developing / testing / contributing</a>
+      </div>
+
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container">
+    <div class="docs markdown"><div class="pilwrap" id="ircmon">
+  <h2>
+    <a href="#ircmon" name="ircmon" class="pilcrow"></a>
+ircmon
+  </h2>
+</div>
+<p><img src="https://img.shields.io/github/issues/fauxilla/ircmon.svg" alt="github-issues"> <img src="https://img.shields.io/github/stars/fauxilla/ircmon.svg" alt="stars"> <img src="https://img.shields.io/github/forks/fauxilla/ircmon.svg" alt="forks"></p>
+<p>monitor irc announce channels and download matched releases</p>
+<p>like autodl_irssi, but:</p>
+<ul>
+<li>written with node</li>
+<li>extensible</li>
+<li>no irssi dependency</li>
+<li>add torrent to deluge</li>
+</ul>
+<p>Take a look at the awesome <a href="https://fauxilla.github.io/ircmon/lib/index.js.html">annotated code</a></p>
+<div class="pilwrap" id="download-and-run-binaries-not-available-yet">
+  <h2>
+    <a href="#download-and-run-binaries-not-available-yet" name="download-and-run-binaries-not-available-yet" class="pilcrow"></a>
+download &amp; run binaries (not available yet)
+  </h2>
+</div>
+<p>This is convenient because you don't need to install nodejs &amp; npm.</p>
+<ul>
+<li>go to <a href="https://github.com/fauxilla/ircmon/releases">release page</a> &amp; download binary</li>
+<li>copy <code>config.sample.hjson</code> from this repo to <code>config.hjson</code> in the same
+directory as your binary and configure paths
+<a href="http://hjson.org/">hjson reference</a></li>
+</ul>
+<div class="pilwrap" id="clone-repo-and-run-from-source">
+  <h2>
+    <a href="#clone-repo-and-run-from-source" name="clone-repo-and-run-from-source" class="pilcrow"></a>
+clone repo &amp; run from source
+  </h2>
+</div>
+<ul>
+<li>be awesome</li>
+<li>install nodejs &amp; npm</li>
+<li>clone this repo somewhere like <code>/opt/</code></li>
+<li>copy <code>config.sample.hjson</code> to <code>config.hjson</code> and configure paths
+<a href="http://hjson.org/">hjson reference</a></li>
+<li><code>npm i</code> to install all the things</li>
+<li><code>npm run babel</code> to transpile code</li>
+<li>start with <code>npm start</code></li>
+</ul>
+<div class="pilwrap" id="clone-repo-and-build-your-own-binaries-not-available-yet">
+  <h2>
+    <a href="#clone-repo-and-build-your-own-binaries-not-available-yet" name="clone-repo-and-build-your-own-binaries-not-available-yet" class="pilcrow"></a>
+clone repo &amp; build your own binaries (not available yet)
+  </h2>
+</div>
+<ul>
+<li>clone this repo</li>
+<li><code>npm i</code> to get dependencies</li>
+<li><code>npm run babel</code> to transpile to node 9</li>
+<li><code>npm run pkg-linux</code> or <code>npm run pkg-win</code></li>
+<li>binary will be output to <code>bin/</code></li>
+</ul>
+<div class="pilwrap" id="run-from-cli">
+  <h2>
+    <a href="#run-from-cli" name="run-from-cli" class="pilcrow"></a>
+run from cli
+  </h2>
+</div>
+<p><strong>debug info</strong></p>
+<p>If you run from source and initiate with <code>npm start</code> debug info will be written to the console. When running from binaries, you'd need to set a <code>DEBUG</code> environment variable to <code>undisco*</code> In linux, this is achieved with a command like <code>DEBUG=undisco* ./ircmon-linux-x64</code>.</p>
+<p><strong>command line args</strong></p>
+<p>Run with no params to see usage info.</p>
+<p>If you're running from source the commands look like <code>npm start -- watch -l info</code></p>
+<div class="pilwrap" id="run-as-a-service-linux-not-available-yet">
+  <h2>
+    <a href="#run-as-a-service-linux-not-available-yet" name="run-as-a-service-linux-not-available-yet" class="pilcrow"></a>
+run as a service (linux) (not available yet)
+  </h2>
+</div>
+<div class="pilwrap" id="run-as-a-service-windows">
+  <h2>
+    <a href="#run-as-a-service-windows" name="run-as-a-service-windows" class="pilcrow"></a>
+run as a service (windows)
+  </h2>
+</div>
+<p>no idea how to do this sorry.. help wanted.</p>
+<div class="pilwrap" id="scripts">
+  <h2>
+    <a href="#scripts" name="scripts" class="pilcrow"></a>
+scripts
+  </h2>
+</div>
+<ul>
+<li><strong>npm run start</strong> : <code>cross-env DEBUG=undisco* node dist</code></li>
+<li><strong>npm run build</strong> : <code>npm run babel &amp;&amp; npm run client:prodn &amp;&amp; npm run docs &amp;&amp; cp docs/README.md.html docs/index.html &amp;&amp; npm run gh-pages</code></li>
+<li><strong>npm run readme</strong> : <code>node-readme</code></li>
+<li><strong>npm run babel</strong> : <code>babel lib -d dist --ignore client</code></li>
+<li><strong>npm run babel:watch</strong> : <code>babel lib --watch -d dist --ignore client</code></li>
+<li><strong>npm run test</strong> : <code>cross-env DEBUG=undisco* NODE_ENV=test mocha --compilers js:babel-register test/*Test.js</code></li>
+<li><strong>npm run test:watch</strong> : <code>cross-env DEBUG=undisco* NODE_ENV=test mocha --compilers js:babel-register --watch test</code></li>
+<li><strong>npm run docs</strong> : <code>npm run readme &amp;&amp; rm -fr ./docs/* &amp;&amp; docker -o ./docs -I -x dist,.README.md,test/fixtures,node_modules,docs</code></li>
+<li><strong>npm run gh-pages</strong> : <code>gh-pages -d docs</code></li>
+<li><strong>npm run pkg-linux</strong> : <code>pkg . --targets node8-linux --output bin/undisco-linux-x64</code></li>
+<li><strong>npm run pkg-win</strong> : <code>pkg . --targets node8-win --output bin/undisco-win-x64.exe</code></li>
+<li><strong>npm run pkg</strong> : <code>npm run pkg-linux &amp;&amp; npm run pkg-win</code></li>
+</ul>
+<div class="pilwrap" id="usage">
+  <h3>
+    <a href="#usage" name="usage" class="pilcrow"></a>
+usage
+  </h3>
+</div>
+<p><a href="https://github.com/fauxilla/ircmon/blob/52c7c0f26563a21b78f3a1c4150898ff907fabac/lib/options.js#L52-L109" title="Source code on GitHub">lib/options.js:52-109</a></p>
+<div class="pilwrap" id="log">
+  <h3>
+    <a href="#log" name="log" class="pilcrow"></a>
+log
+  </h3>
+</div>
+<p><a href="https://github.com/fauxilla/ircmon/blob/52c7c0f26563a21b78f3a1c4150898ff907fabac/lib/log.js#L62-L75" title="Source code on GitHub">lib/log.js:62-75</a></p>
+<div class="pilwrap" id="developing-testing-contributing">
+  <h2>
+    <a href="#developing-testing-contributing" name="developing-testing-contributing" class="pilcrow"></a>
+developing / testing / contributing
+  </h2>
+</div>
+<p>Suggestions / contributions are absolutely welcome.</p>
+<p>Use <code>npm run babel</code> or <code>npm run babel:watch</code> to transpile source from <code>lib</code> to
+<code>dist</code>, then <code>npm start</code> to run.</p>
+<p>test with <code>npm run test</code> or <code>npm run test:watch</code></p>
+<p>If you want to contribute anonymously, take a look at <a href="https://www.gitmask.com/">gitmask</a>, you basically upload your commit to gitmask and it destroys your id before making a PR.</p>
+</div>
+  </div>
+</body>
+</html>

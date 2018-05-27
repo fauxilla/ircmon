@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>checkTest.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../doc-style.css" />
+  <script src="../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../";
+    var thisFile = "test/checkTest.js";
+    var defaultSidebar = true;
+  </script>
+  <script src="../doc-script.js"></script>
+
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container">
+    <div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+    
+      <tr>
+        <td class="docs">
+          <h1>checkTest.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+    
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1"></a>
+</div>
+<p>import {
+back as nockBack
+} from 'nock'</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-keyword">import</span> {
+  equal
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'assert'</span>
+<span class="hljs-keyword">import</span> Listener <span class="hljs-keyword">from</span> <span class="hljs-string">'../lib/Listener'</span>
+<span class="hljs-keyword">import</span> {
+  stub
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'sinon'</span>
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2"></a>
+</div>
+<p>import sinon from 'sinon'
+import http from 'http'</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-keyword">import</span> {
+  parse
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'hjson'</span>
+<span class="hljs-keyword">import</span> {
+  join
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span>
+<span class="hljs-keyword">import</span> {
+  Client
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'irc'</span>
+
+<span class="hljs-keyword">import</span> {
+  readFile,
+  unlink
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'mz/fs'</span>
+<span class="hljs-keyword">import</span> {
+  loadDatabase
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'../lib/db'</span>
+<span class="hljs-keyword">import</span> {
+  emptyDirSync
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'fs-extra'</span>
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>nockBack records http requests and replays them next time the tests are run
+the first time you run these tests, the requests will be sent to
+themoviedb.org, so you'll need your apiKey in ../config.hjson
+thereafter, the requests won't actually be sent.
+to avoid committing your apiKey, the stored requests are .gitignored.</p>
+</div>
+<div class="body">
+</div>
+</div>
+nockBack.setMode('record')
+nockBack.fixtures = 'test/fixtures/nockBack'
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getHjson</span> (<span class="hljs-params">descriptor</span>) </span>{
+  <span class="hljs-keyword">const</span> path = join(<span class="hljs-string">'test'</span>, <span class="hljs-string">'fixtures'</span>, <span class="hljs-string">'checks'</span>, <span class="hljs-string">`<span class="hljs-subst">${descriptor}</span>.hjson`</span>)
+  <span class="hljs-keyword">return</span> parse(<span class="hljs-keyword">await</span> readFile(path, <span class="hljs-string">'utf8'</span>))
+}
+<span class="hljs-keyword">let</span> stubs
+
+describe(<span class="hljs-string">'ircmon checks'</span>, () =&gt; {
+  before(<span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">try</span> {
+      <span class="hljs-keyword">await</span> unlink(<span class="hljs-string">'test/.store'</span>)
+    } <span class="hljs-keyword">catch</span> (e) {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'store doesnt exist'</span>)
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4"></a>
+</div>
+<p>file doesn't exist</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    }
+    loadDatabase(<span class="hljs-string">'test/.store'</span>)
+    emptyDirSync(<span class="hljs-string">'test/blackHole'</span>)
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5"></a>
+</div>
+<p>newter irc Client</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    stubs = [
+      stub(Client.prototype, <span class="hljs-string">'connect'</span>).callsArg(<span class="hljs-number">0</span>),
+      stub(Client.prototype, <span class="hljs-string">'join'</span>).callsArg(<span class="hljs-number">1</span>),
+      stub(Listener.prototype, <span class="hljs-string">'downloadTorrent'</span>).resolves()
+    ]
+  })
+  after(<span class="hljs-function">(<span class="hljs-params">done</span>) =&gt;</span> {
+    stubs.forEach(<span class="hljs-function">(<span class="hljs-params">s</span>) =&gt;</span> s.restore())
+    done()
+  })
+  beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-6" id="section-6"></a>
+</div>
+<p>create spy
+sinon.spy(cloudinary.api, 'resources')
+this.stubWrite = sinon.stub(LogSql.prototype, 'write')
+this.stubLastLog = sinon.stub(LogSql, 'lastLog').resolves()
+this.requestSpy = sinon.spy(http, 'request')</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">  })
+  afterEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-7" id="section-7"></a>
+</div>
+<p>this.stubWrite.restore()
+this.stubLastLog.restore()
+this.requestSpy.restore()
+cloudinary.api.resources.restore()</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">  })
+  it(<span class="hljs-string">'check: announced by announcer'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">const</span> fixtures = <span class="hljs-keyword">await</span> getHjson(<span class="hljs-string">'01announcer'</span>)
+    <span class="hljs-keyword">let</span> { listener } = fixtures
+    <span class="hljs-keyword">const</span> {
+      opt,
+      message
+    } = fixtures
+    listener = <span class="hljs-keyword">new</span> Listener(listener, opt)
+    <span class="hljs-keyword">await</span> listener.init()
+    listener.connection.emit(
+      <span class="hljs-string">'message'</span>,
+      <span class="hljs-string">'notAnnouncer'</span>,
+      <span class="hljs-literal">null</span>,
+      message
+    )
+    equal(listener.checkError.code, <span class="hljs-string">'announcer'</span>)
+    listener.connection.removeAllListeners(<span class="hljs-string">'message'</span>)
+  })
+  it(<span class="hljs-string">'check: no match'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">const</span> fixtures = <span class="hljs-keyword">await</span> getHjson(<span class="hljs-string">'02match'</span>)
+    <span class="hljs-keyword">let</span> { listener } = fixtures
+    <span class="hljs-keyword">const</span> {
+      opt,
+      message
+    } = fixtures
+    listener = <span class="hljs-keyword">new</span> Listener(listener, opt)
+    <span class="hljs-keyword">await</span> listener.init()
+    listener.connection.emit(
+      <span class="hljs-string">'message'</span>,
+      <span class="hljs-string">'IPT'</span>,
+      <span class="hljs-literal">null</span>,
+      message
+    )
+    equal(listener.checkError.code, <span class="hljs-string">'match'</span>)
+    listener.connection.removeAllListeners(<span class="hljs-string">'message'</span>)
+  })
+  it(<span class="hljs-string">'check: series mode, msg contains SxxExx'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">const</span> fixtures = <span class="hljs-keyword">await</span> getHjson(<span class="hljs-string">'03noSeriesEp'</span>)
+    <span class="hljs-keyword">let</span> { listener } = fixtures
+    <span class="hljs-keyword">const</span> {
+      opt,
+      message
+    } = fixtures
+    listener = <span class="hljs-keyword">new</span> Listener(listener, opt)
+    <span class="hljs-keyword">await</span> listener.init()
+    listener.connection.emit(
+      <span class="hljs-string">'message'</span>,
+      <span class="hljs-string">'IPT'</span>,
+      <span class="hljs-literal">null</span>,
+      message
+    )
+    equal(listener.checkError.code, <span class="hljs-string">'noSeriesEp'</span>)
+    listener.connection.removeAllListeners(<span class="hljs-string">'message'</span>)
+  })
+  it(<span class="hljs-string">'check: series mode, old series'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">const</span> fixtures = <span class="hljs-keyword">await</span> getHjson(<span class="hljs-string">'04series'</span>)
+    <span class="hljs-keyword">let</span> { listener } = fixtures
+    <span class="hljs-keyword">const</span> {
+      opt,
+      message
+    } = fixtures
+    listener = <span class="hljs-keyword">new</span> Listener(listener, opt)
+    <span class="hljs-keyword">await</span> listener.init()
+    listener.connection.emit(
+      <span class="hljs-string">'message'</span>,
+      <span class="hljs-string">'IPT'</span>,
+      <span class="hljs-literal">null</span>,
+      message
+    )
+    equal(listener.checkError.code, <span class="hljs-string">'series'</span>)
+    listener.connection.removeAllListeners(<span class="hljs-string">'message'</span>)
+  })
+  it(<span class="hljs-string">'check: series mode, old ep'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">const</span> fixtures = <span class="hljs-keyword">await</span> getHjson(<span class="hljs-string">'05episode'</span>)
+    <span class="hljs-keyword">let</span> { listener } = fixtures
+    <span class="hljs-keyword">const</span> {
+      opt,
+      message
+    } = fixtures
+    listener = <span class="hljs-keyword">new</span> Listener(listener, opt)
+    <span class="hljs-keyword">await</span> listener.init()
+    listener.connection.emit(
+      <span class="hljs-string">'message'</span>,
+      <span class="hljs-string">'IPT'</span>,
+      <span class="hljs-literal">null</span>,
+      message
+    )
+    equal(listener.checkError.code, <span class="hljs-string">'episode'</span>)
+    listener.connection.removeAllListeners(<span class="hljs-string">'message'</span>)
+  })
+  it(<span class="hljs-string">'check: series mode, increment ep'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">const</span> fixtures = <span class="hljs-keyword">await</span> getHjson(<span class="hljs-string">'06incrementEpisode'</span>)
+    <span class="hljs-keyword">let</span> { listener } = fixtures
+    <span class="hljs-keyword">const</span> {
+      opt,
+      message
+    } = fixtures
+    listener = <span class="hljs-keyword">new</span> Listener(listener, opt)
+    <span class="hljs-keyword">await</span> listener.init()
+    listener.connection.emit(
+      <span class="hljs-string">'message'</span>,
+      <span class="hljs-string">'IPT'</span>,
+      <span class="hljs-literal">null</span>,
+      message
+    )
+    equal(listener.checkError, <span class="hljs-literal">undefined</span>)
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-8" id="section-8"></a>
+</div>
+<p>not possible to await event handler</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve</span>) =&gt;</span> setTimeout(resolve, <span class="hljs-number">250</span>))
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-9" id="section-9"></a>
+</div>
+<p>same message twice</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    listener.connection.emit(
+      <span class="hljs-string">'message'</span>,
+      <span class="hljs-string">'IPT'</span>,
+      <span class="hljs-literal">null</span>,
+      message
+    )
+    equal(listener.checkError.code, <span class="hljs-string">'episode'</span>)
+    listener.connection.removeAllListeners(<span class="hljs-string">'message'</span>)
+  })
+  it(<span class="hljs-string">'check: minSize'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">const</span> fixtures = <span class="hljs-keyword">await</span> getHjson(<span class="hljs-string">'07minSize'</span>)
+    <span class="hljs-keyword">let</span> { listener } = fixtures
+    <span class="hljs-keyword">const</span> {
+      opt,
+      message
+    } = fixtures
+    listener = <span class="hljs-keyword">new</span> Listener(listener, opt)
+    <span class="hljs-keyword">await</span> listener.init()
+    listener.connection.emit(
+      <span class="hljs-string">'message'</span>,
+      <span class="hljs-string">'IPT'</span>,
+      <span class="hljs-literal">null</span>,
+      message
+    )
+    equal(listener.checkError.code, <span class="hljs-string">'minSize'</span>)
+    listener.connection.removeAllListeners(<span class="hljs-string">'message'</span>)
+  })
+  it(<span class="hljs-string">'check: maxSize'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">const</span> fixtures = <span class="hljs-keyword">await</span> getHjson(<span class="hljs-string">'08maxSize'</span>)
+    <span class="hljs-keyword">let</span> { listener } = fixtures
+    <span class="hljs-keyword">const</span> {
+      opt,
+      message
+    } = fixtures
+    listener = <span class="hljs-keyword">new</span> Listener(listener, opt)
+    <span class="hljs-keyword">await</span> listener.init()
+    listener.connection.emit(
+      <span class="hljs-string">'message'</span>,
+      <span class="hljs-string">'IPT'</span>,
+      <span class="hljs-literal">null</span>,
+      message
+    )
+    equal(listener.checkError.code, <span class="hljs-string">'maxSize'</span>)
+    listener.connection.removeAllListeners(<span class="hljs-string">'message'</span>)
+  })
+  it(<span class="hljs-string">'check: frequency'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">const</span> fixtures = <span class="hljs-keyword">await</span> getHjson(<span class="hljs-string">'09frequency'</span>)
+    <span class="hljs-keyword">let</span> { listener } = fixtures
+    <span class="hljs-keyword">const</span> {
+      opt,
+      message
+    } = fixtures
+    listener = <span class="hljs-keyword">new</span> Listener(listener, opt)
+    <span class="hljs-keyword">await</span> listener.init()
+    listener.connection.emit(
+      <span class="hljs-string">'message'</span>,
+      <span class="hljs-string">'IPT'</span>,
+      <span class="hljs-literal">null</span>,
+      message
+    )
+    equal(listener.checkError.code, <span class="hljs-string">'frequency'</span>)
+    listener.connection.removeAllListeners(<span class="hljs-string">'message'</span>)
+  })
+})
+
+</pre>
+        </td>
+      </tr>
+    
+  </tbody>
+</table>
+
+  </div>
+</body>
+</html>

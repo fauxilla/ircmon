@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>loadSite.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../doc-style.css" />
+  <script src="../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../";
+    var thisFile = "lib/loadSite.js";
+    var defaultSidebar = true;
+  </script>
+  <script src="../doc-script.js"></script>
+
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+
+      <div class="heading h2">
+        <a href="#loadsite">loadSite</a>
+      </div>
+
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container">
+    <div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+    
+      <tr>
+        <td class="docs">
+          <h1>loadSite.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+    
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1"></a>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-keyword">import</span> {
+  readFile
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'mz/fs'</span>
+<span class="hljs-keyword">import</span> {
+  parse
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'hjson'</span>
+<span class="hljs-keyword">import</span> {
+  mapValues
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'lodash'</span>
+<span class="hljs-keyword">import</span> stringToRegExp <span class="hljs-keyword">from</span> <span class="hljs-string">'string-to-regexp'</span>
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="dox">
+<div class="summary">
+<div class="pilwrap" id="loadsite">
+  <h2>
+    <a href="#loadsite" name="loadsite" class="pilcrow"></a>
+loadSite
+  </h2>
+</div>
+</div>
+<div class="body">
+</div>
+<div class="details">
+<div class="dox_tag_title">Params</div>
+<div class="dox_tag_detail">
+<span class="dox_tag_name">site</span>
+<span class="dox_type">String</span>
+<span>sitename
+</span>
+</div>
+<div class="dox_tag_title">Returns</div>
+<div class="dox_tag_detail">
+<span class="dox_tag_name"></span>
+<span class="dox_type">Object</span>
+<span>site definition
+</span>
+</div>
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadSite</span> (<span class="hljs-params">site</span>) </span>{
+  <span class="hljs-keyword">let</span> raw
+  <span class="hljs-keyword">try</span> {
+    raw = <span class="hljs-keyword">await</span> readFile(<span class="hljs-string">`sites/<span class="hljs-subst">${site.toLowerCase()}</span>.hjson`</span>, <span class="hljs-string">'utf8'</span>)
+  } <span class="hljs-keyword">catch</span> (e) {
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">`site config doesn't seem to exist: <span class="hljs-subst">${site}</span>`</span>)
+  }
+  <span class="hljs-keyword">try</span> {
+    site = parse(raw)
+  } <span class="hljs-keyword">catch</span> (e) {
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">`bad site config: <span class="hljs-subst">${e.message}</span>`</span>)
+  }
+  site.placeholders = mapValues(site.placeholders, stringToRegExp)
+  <span class="hljs-keyword">return</span> site
+}
+
+</pre>
+        </td>
+      </tr>
+    
+  </tbody>
+</table>
+
+  </div>
+</body>
+</html>

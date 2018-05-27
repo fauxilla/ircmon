@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>log.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../doc-style.css" />
+  <script src="../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../";
+    var thisFile = "lib/log.js";
+    var defaultSidebar = true;
+  </script>
+  <script src="../doc-script.js"></script>
+
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container">
+    <div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+    
+      <tr>
+        <td class="docs">
+          <h1>log.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+    
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1"></a>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-keyword">import</span> bunyan <span class="hljs-keyword">from</span> <span class="hljs-string">'bunyan'</span>
+<span class="hljs-keyword">import</span> prettyjson <span class="hljs-keyword">from</span> <span class="hljs-string">'prettyjson'</span>
+<span class="hljs-keyword">import</span> prettyMs <span class="hljs-keyword">from</span> <span class="hljs-string">'pretty-ms'</span>
+<span class="hljs-keyword">import</span> chalk <span class="hljs-keyword">from</span> <span class="hljs-string">'chalk'</span>
+
+<span class="hljs-keyword">const</span> levelsFormat = {
+  <span class="hljs-string">'60'</span>: chalk.red(<span class="hljs-string">'[ fatal ] '</span>),
+  <span class="hljs-string">'50'</span>: chalk.red(<span class="hljs-string">'[ error ] '</span>),
+  <span class="hljs-string">'40'</span>: chalk.red(<span class="hljs-string">'[ warn  ] '</span>),
+  <span class="hljs-string">'30'</span>: chalk.blue(<span class="hljs-string">'[ info  ] '</span>),
+  <span class="hljs-string">'20'</span>: chalk.green(<span class="hljs-string">'[ debug ] '</span>),
+  <span class="hljs-string">'15'</span>: chalk.green(<span class="hljs-string">'[ dump  ] '</span>),
+  <span class="hljs-string">'10'</span>: <span class="hljs-string">'trace'</span>
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> levels = {
+  <span class="hljs-string">'60'</span>: <span class="hljs-string">'fatal'</span>,
+  <span class="hljs-string">'50'</span>: <span class="hljs-string">'error'</span>,
+  <span class="hljs-string">'40'</span>: <span class="hljs-string">'warn'</span>,
+  <span class="hljs-string">'30'</span>: <span class="hljs-string">'info'</span>,
+  <span class="hljs-string">'20'</span>: <span class="hljs-string">'debug'</span>,
+  <span class="hljs-string">'10'</span>: <span class="hljs-string">'trace'</span>
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LogStdOut</span> </span>{
+  <span class="hljs-keyword">constructor</span> () {
+    <span class="hljs-keyword">this</span>.msDiff = <span class="hljs-built_in">Date</span>.now()
+  }
+  write ({ descriptor, msg, meta, level }) {
+    <span class="hljs-keyword">const</span> msDiff = <span class="hljs-built_in">Date</span>.now() - <span class="hljs-keyword">this</span>.msDiff
+    <span class="hljs-keyword">this</span>.msDiff = <span class="hljs-built_in">Date</span>.now()
+    <span class="hljs-keyword">const</span> prefix = [
+      levelsFormat[level],
+      chalk.gray(prettyMs(msDiff).padEnd(<span class="hljs-number">7</span>, <span class="hljs-string">' '</span>)),
+      descriptor ? chalk.bold(descriptor.padEnd(<span class="hljs-number">10</span>, <span class="hljs-string">' '</span>)) : <span class="hljs-string">'          '</span>,
+      <span class="hljs-string">' |'</span>
+    ].join(<span class="hljs-string">''</span>)
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">''</span>.concat(prefix, msg))
+    <span class="hljs-keyword">if</span> (meta) {
+      <span class="hljs-keyword">const</span> padding = [
+        <span class="hljs-string">' '</span>.repeat(<span class="hljs-number">28</span>),
+        <span class="hljs-string">'| '</span>
+      ].join(<span class="hljs-string">''</span>)
+      <span class="hljs-keyword">let</span> dump = prettyjson.render(meta)
+      dump = dump.replace(<span class="hljs-regexp">/\n/g</span>, <span class="hljs-string">`\n<span class="hljs-subst">${padding}</span>`</span>)
+      dump = padding.concat(dump)
+      <span class="hljs-built_in">console</span>.log(dump)
+    }
+  }
+}
+
+<span class="hljs-keyword">const</span> serializers = {
+  <span class="hljs-attr">meta</span>: <span class="hljs-function">(<span class="hljs-params">m</span>) =&gt;</span> m,
+  <span class="hljs-attr">descriptor</span>: <span class="hljs-function">(<span class="hljs-params">d</span>) =&gt;</span> d
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2"></a>
+</div>
+<p>meta: (meta) =&gt; ({
+files: meta.files,
+placeholders: meta.placeholders
+}),
+err: bunyan.stdSerializers.err</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> log = bunyan.createLogger({
+  <span class="hljs-attr">name</span>: <span class="hljs-string">'ircmon'</span>,
+  <span class="hljs-attr">level</span>: <span class="hljs-string">'debug'</span>,
+  <span class="hljs-attr">streams</span>: [
+    { <span class="hljs-attr">type</span>: <span class="hljs-string">'raw'</span>, serializers, <span class="hljs-attr">stream</span>: <span class="hljs-keyword">new</span> LogStdOut() },
+    {
+      <span class="hljs-attr">type</span>: <span class="hljs-string">'rotating-file'</span>,
+      serializers,
+      <span class="hljs-attr">path</span>: <span class="hljs-string">'ircMon.log'</span>,
+      <span class="hljs-attr">period</span>: <span class="hljs-string">'1d'</span>,
+      <span class="hljs-attr">count</span>: <span class="hljs-number">3</span>
+    }
+  ]
+})
+
+</pre>
+        </td>
+      </tr>
+    
+  </tbody>
+</table>
+
+  </div>
+</body>
+</html>

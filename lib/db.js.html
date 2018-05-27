@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>db.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../doc-style.css" />
+  <script src="../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../";
+    var thisFile = "lib/db.js";
+    var defaultSidebar = true;
+  </script>
+  <script src="../doc-script.js"></script>
+
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container">
+    <div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+    
+      <tr>
+        <td class="docs">
+          <h1>db.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+    
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1"></a>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-keyword">import</span> Nedb <span class="hljs-keyword">from</span> <span class="hljs-string">'nedb'</span>
+<span class="hljs-keyword">import</span> {
+  promisify
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'util'</span>
+<span class="hljs-keyword">import</span> {
+  pick
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'lodash'</span>
+
+<span class="hljs-keyword">let</span> store
+<span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadDatabase</span> (<span class="hljs-params">path = <span class="hljs-string">'.store'</span></span>) </span>{
+  store = <span class="hljs-keyword">new</span> Nedb(path)
+  store.findOne = promisify(Nedb.prototype.findOne)
+  store.update = promisify(Nedb.prototype.update)
+  store.loadDatabase()
+}
+loadDatabase()
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">find</span> (<span class="hljs-params">descriptor</span>) </span>{
+  <span class="hljs-keyword">let</span> record = <span class="hljs-keyword">await</span> store.findOne({ descriptor })
+  <span class="hljs-keyword">if</span> (!record) record = { descriptor }
+  record = pick(record, [<span class="hljs-string">'descriptor'</span>, <span class="hljs-string">'series'</span>, <span class="hljs-string">'episode'</span>, <span class="hljs-string">'lastAt'</span>])
+  <span class="hljs-keyword">return</span> record
+}
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">upsert</span> (<span class="hljs-params">descriptor, listener</span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> store.update({ descriptor }, listener, { <span class="hljs-attr">upsert</span>: <span class="hljs-literal">true</span> })
+}
+
+</pre>
+        </td>
+      </tr>
+    
+  </tbody>
+</table>
+
+  </div>
+</body>
+</html>

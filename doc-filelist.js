@@ -1,0 +1,1 @@
+var tree={"files":["README.md","package-lock.json","package.json"],"dirs":{"lib":{"files":["Connection.js","Err.js","Listener.js","check.js","db.js","index.js","listDirs.js","loadSite.js","log.js","options.js"],"dirs":{"downloaders":{"files":["blackHole.js","deluge.js","index.js"]}}},"test":{"files":["checkTest.js","equalFixture.js","siteTest.js"]}}};

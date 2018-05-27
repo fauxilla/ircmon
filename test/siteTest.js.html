@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>siteTest.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../doc-style.css" />
+  <script src="../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../";
+    var thisFile = "test/siteTest.js";
+    var defaultSidebar = true;
+  </script>
+  <script src="../doc-script.js"></script>
+
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container">
+    <div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+    
+      <tr>
+        <td class="docs">
+          <h1>siteTest.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+    
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1"></a>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-keyword">import</span> Listener <span class="hljs-keyword">from</span> <span class="hljs-string">'../lib/Listener'</span>
+<span class="hljs-keyword">import</span> {
+  stub
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'sinon'</span>
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2"></a>
+</div>
+<p>import sinon from 'sinon'
+import http from 'http'</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-keyword">import</span> {
+  parse
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'hjson'</span>
+<span class="hljs-keyword">import</span> {
+  join
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span>
+<span class="hljs-keyword">import</span> {
+  Client
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'irc'</span>
+
+<span class="hljs-keyword">import</span> {
+  readFile,
+  unlink
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'mz/fs'</span>
+<span class="hljs-keyword">import</span> {
+  loadDatabase
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'../lib/db'</span>
+<span class="hljs-keyword">import</span> {
+  emptyDirSync
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'fs-extra'</span>
+<span class="hljs-keyword">import</span> _equalFixture <span class="hljs-keyword">from</span> <span class="hljs-string">'./equalFixture'</span>
+
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getHjson</span> (<span class="hljs-params">descriptor</span>) </span>{
+  <span class="hljs-keyword">const</span> path = join(<span class="hljs-string">'test'</span>, <span class="hljs-string">'fixtures'</span>, <span class="hljs-string">'sites'</span>, <span class="hljs-string">`<span class="hljs-subst">${descriptor}</span>Config.hjson`</span>)
+  <span class="hljs-keyword">return</span> parse(<span class="hljs-keyword">await</span> readFile(path, <span class="hljs-string">'utf8'</span>))
+}
+<span class="hljs-keyword">const</span> equalFixture = _equalFixture(join(<span class="hljs-string">'test'</span>, <span class="hljs-string">'fixtures'</span>, <span class="hljs-string">'sites'</span>))
+
+describe(<span class="hljs-string">'ircmon sites'</span>, () =&gt; {
+  before(<span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">try</span> {
+      <span class="hljs-keyword">await</span> unlink(<span class="hljs-string">'test/.store'</span>)
+    } <span class="hljs-keyword">catch</span> (e) {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'store doesnt exist'</span>)
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3"></a>
+</div>
+<p>file doesn't exist</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    }
+    loadDatabase(<span class="hljs-string">'test/.store'</span>)
+    emptyDirSync(<span class="hljs-string">'test/blackHole'</span>)
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4"></a>
+</div>
+<p>newter irc Client</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    stub(Client.prototype, <span class="hljs-string">'connect'</span>).callsArg(<span class="hljs-number">0</span>)
+    stub(Client.prototype, <span class="hljs-string">'join'</span>).callsArg(<span class="hljs-number">1</span>)
+    stub(Listener.prototype, <span class="hljs-string">'downloadTorrent'</span>).resolves()
+  })
+  it(<span class="hljs-string">'iptorrents'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">const</span> fixtures = <span class="hljs-keyword">await</span> getHjson(<span class="hljs-string">'01iptorrents'</span>)
+    <span class="hljs-keyword">let</span> { listener } = fixtures
+    <span class="hljs-keyword">const</span> {
+      opt,
+      messages
+    } = fixtures
+    listener = <span class="hljs-keyword">new</span> Listener(listener, opt)
+    <span class="hljs-keyword">await</span> listener.init()
+    <span class="hljs-keyword">const</span> announcer = listener.site.announcers[<span class="hljs-number">0</span>]
+    <span class="hljs-keyword">const</span> results = messages.map(<span class="hljs-function">(<span class="hljs-params">m</span>) =&gt;</span> listener.parse(m, announcer))
+    <span class="hljs-keyword">await</span> equalFixture(<span class="hljs-string">'01iptorrents'</span>, results, <span class="hljs-string">'unexpected result'</span>)
+  })
+})
+
+</pre>
+        </td>
+      </tr>
+    
+  </tbody>
+</table>
+
+  </div>
+</body>
+</html>

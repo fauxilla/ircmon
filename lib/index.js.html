@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>index.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../doc-style.css" />
+  <script src="../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../";
+    var thisFile = "lib/index.js";
+    var defaultSidebar = true;
+  </script>
+  <script src="../doc-script.js"></script>
+
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container">
+    <div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+    
+      <tr>
+        <td class="docs">
+          <h1>index.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+    
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1"></a>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">
+<span class="hljs-keyword">import</span> {
+  options,
+  usage
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'./options'</span>
+<span class="hljs-keyword">import</span> Listener <span class="hljs-keyword">from</span> <span class="hljs-string">'./Listener'</span>
+<span class="hljs-keyword">import</span> fontAscii <span class="hljs-keyword">from</span> <span class="hljs-string">'font-ascii'</span>
+<span class="hljs-keyword">import</span> {
+  log,
+  levels
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'./log'</span>
+<span class="hljs-keyword">import</span> {
+  readFile
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'mz/fs'</span>
+
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">ircMon</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">const</span> opt = <span class="hljs-keyword">await</span> options()
+  <span class="hljs-keyword">const</span> commands = {
+    <span class="hljs-attr">watch</span>: runWatch,
+    <span class="hljs-attr">usage</span>: runUsage,
+    <span class="hljs-attr">log</span>: runLog
+  }
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> commands[opt.command](opt)
+}
+
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">runUsage</span> (<span class="hljs-params">opt</span>) </span>{
+  usage()
+}
+
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">runLog</span> (<span class="hljs-params">opt</span>) </span>{
+  <span class="hljs-keyword">let</span> lines = []
+  <span class="hljs-keyword">let</span> logFile = <span class="hljs-number">0</span>
+  <span class="hljs-keyword">let</span> contents = []
+  <span class="hljs-keyword">const</span> level = <span class="hljs-built_in">Object</span>.keys(levels).find(<span class="hljs-function">(<span class="hljs-params">level</span>) =&gt;</span> {
+    <span class="hljs-keyword">if</span> (levels[level] === opt.logLevel) <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseInt</span>(level)
+  })
+  <span class="hljs-keyword">while</span> (lines.length &lt; opt.numLines) {
+    <span class="hljs-keyword">if</span> (!contents.length) {
+      <span class="hljs-keyword">let</span> file = <span class="hljs-string">`ircMon.log<span class="hljs-subst">${logFile ? <span class="hljs-string">`.<span class="hljs-subst">${logFile}</span>`</span> : <span class="hljs-string">''</span>}</span>`</span>
+      logFile += <span class="hljs-number">1</span>
+      <span class="hljs-keyword">try</span> {
+        contents = <span class="hljs-keyword">await</span> readFile(file, <span class="hljs-string">'utf8'</span>)
+        contents = contents.split(<span class="hljs-string">'\n'</span>)
+        contents.pop() <span class="hljs-comment">// ditch last empty string</span>
+      } <span class="hljs-keyword">catch</span> (e) {
+        <span class="hljs-keyword">break</span>
+      } <span class="hljs-comment">// no more log files</span>
+    }
+    <span class="hljs-keyword">const</span> line = <span class="hljs-built_in">JSON</span>.parse(contents.pop())
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2"></a>
+</div>
+<p>log.debug({ meta: { level: line.level, descriptor: line.descriptor } }, 'log line')</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">if</span> (line.level &lt; level) <span class="hljs-keyword">continue</span>
+    <span class="hljs-keyword">if</span> (opt.descriptor &amp;&amp; line.descriptor !== opt.descriptor) <span class="hljs-keyword">continue</span>
+    log[levels[line.level]](line, line.msg)
+    lines += <span class="hljs-number">1</span>
+  }
+}
+
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">runWatch</span> (<span class="hljs-params">opt</span>) </span>{
+  log.info(<span class="hljs-string">'run watch'</span>)
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3"></a>
+</div>
+<p>eslint-disable-next-line no-unused-vars</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">  <span class="hljs-keyword">const</span> listeners = opt.listeners.map(<span class="hljs-function">(<span class="hljs-params">listener</span>) =&gt;</span> {
+    listener = <span class="hljs-keyword">new</span> Listener(listener, opt)
+    listener.init()
+    <span class="hljs-keyword">return</span> listener
+  })
+}
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4"></a>
+</div>
+<p>only run if called (not impoted)</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-keyword">if</span> (!<span class="hljs-built_in">module</span>.parent) {
+  (<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    fontAscii(<span class="hljs-string">'ircmon'</span>, { <span class="hljs-attr">typeface</span>: <span class="hljs-string">'SmallSlant'</span>, <span class="hljs-attr">color</span>: <span class="hljs-string">'blue'</span> })
+    <span class="hljs-keyword">try</span> {
+      ircMon(<span class="hljs-keyword">await</span> options())
+    } <span class="hljs-keyword">catch</span> (err) {
+      <span class="hljs-built_in">console</span>.log(err)
+      log.error({<span class="hljs-attr">meta</span>: err}, err.message)
+    }
+  })()
+}
+
+</pre>
+        </td>
+      </tr>
+    
+  </tbody>
+</table>
+
+  </div>
+</body>
+</html>
