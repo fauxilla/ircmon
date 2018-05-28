@@ -13,25 +13,34 @@ import {
 import {
   Client
 } from 'irc'
-
 import {
-  readFile,
   unlink
 } from 'mz/fs'
+import {
+  readFileSync,
+  readdirSync
+} from 'fs'
 import {
   loadDatabase
 } from '../lib/db'
 import {
   emptyDirSync
 } from 'fs-extra'
+import {
+  ok
+} from 'assert'
 import _equalFixture from './equalFixture'
 
-async function getHjson (descriptor) {
-  const path = join('test', 'fixtures', 'sites', `${descriptor}Config.hjson`)
-  return parse(await readFile(path, 'utf8'))
-}
 const equalFixture = _equalFixture(join('test', 'fixtures', 'sites'))
 
+/**
+ * I fell into some kind of rift in the space time continuum while putting this
+ * together. Best explanation I have is that mocha does some kind of code
+ * inspection to determine whether something is async, and it's buggy.
+ * The approach which worked was to minimise async stuff, and only use it for
+ * the function passed to 'it'. Trusting that mocha will handle the
+ * the serialisation.
+ */
 describe('ircmon sites', () => {
   before(async () => {
     try {
@@ -48,17 +57,30 @@ describe('ircmon sites', () => {
     stub(Client.prototype, 'join').callsArg(1)
     stub(Listener.prototype, 'downloadTorrent').resolves()
   })
-  it('iptorrents', async () => {
-    const fixtures = await getHjson('01iptorrents')
-    let { listener } = fixtures
+  const trackers = readdirSync('sites')
+  trackers.forEach((tracker) => {
     const {
-      opt,
-      messages
-    } = fixtures
-    listener = new Listener(listener, opt)
-    await listener.init()
-    const announcer = listener.site.announcers[0]
-    const results = messages.map((m) => listener.parse(m, announcer))
-    await equalFixture('01iptorrents', results, 'unexpected result')
+      siteName,
+      examples
+    } = parse(readFileSync(join('sites', tracker), 'utf8'))
+    it(siteName, async function () {
+      const listener = new Listener({ siteName }, {})
+      await listener.init()
+      const announcer = listener.site.announcers[0]
+      const results = examples.map((e) => listener.parse(e, announcer))
+      await equalFixture(siteName, results, 'unexpected result')
+      const keys = [
+        'name',
+        'size',
+        'id',
+        'file',
+        'uri'
+      ]
+      results.forEach((result) => {
+        keys.forEach((key) => {
+          ok(result[key], `missing value for key: ${key}`)
+        })
+      })
+    })
   })
 })
