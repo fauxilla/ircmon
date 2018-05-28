@@ -1,10 +1,8 @@
 {
+
   listener: {
     descriptor: freeleech
-    test: true
-    siteName: iptorrents
-    nick: fauxnom_autodl
-    password: ''
+    tracker: iptorrents
     tests: [
       FREELEECH
       !XXX
@@ -15,7 +13,12 @@
     mode: persist
   },
   opt: {
-    downloadTo: deluge
+    trackers: {
+      iptorrents: {
+        nick: fauxnom_autodl
+        password: ''
+      }
+    },
     deluge: {
       enabled: true
       url: http://172.18.0.3:8112

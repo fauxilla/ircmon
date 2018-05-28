@@ -64,9 +64,9 @@ describe('ircmon sites', () => {
       examples
     } = parse(readFileSync(join('trackers', tracker), 'utf8'))
     it(siteName, async function () {
-      const listener = new Listener({ siteName }, {})
+      const listener = new Listener({ tracker: siteName }, { trackers: { [siteName]: {} } })
       await listener.init()
-      const announcer = listener.site.announcers[0]
+      const announcer = listener.tracker.announcers[0]
       const results = examples.map((e) => listener.parse(e, announcer))
       await equalFixture(siteName, results, 'unexpected result')
       const keys = [
