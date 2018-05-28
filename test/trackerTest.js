@@ -31,7 +31,7 @@ import {
 } from 'assert'
 import _equalFixture from './equalFixture'
 
-const equalFixture = _equalFixture(join('test', 'fixtures', 'sites'))
+const equalFixture = _equalFixture(join('test', 'fixtures', 'trackers'))
 
 /**
  * I fell into some kind of rift in the space time continuum while putting this
@@ -57,12 +57,12 @@ describe('ircmon sites', () => {
     stub(Client.prototype, 'join').callsArg(1)
     stub(Listener.prototype, 'downloadTorrent').resolves()
   })
-  const trackers = readdirSync('sites')
+  const trackers = readdirSync('trackers')
   trackers.forEach((tracker) => {
     const {
       siteName,
       examples
-    } = parse(readFileSync(join('sites', tracker), 'utf8'))
+    } = parse(readFileSync(join('trackers', tracker), 'utf8'))
     it(siteName, async function () {
       const listener = new Listener({ siteName }, {})
       await listener.init()
