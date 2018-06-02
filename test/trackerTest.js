@@ -12,7 +12,7 @@ import {
 } from 'path'
 import {
   Client
-} from 'irc'
+} from 'irc-upd'
 import {
   unlink
 } from 'mz/fs'

@@ -18,7 +18,7 @@ import {
 } from 'path'
 import {
   Client
-} from 'irc'
+} from 'irc-upd'
 
 import {
   readFile,
